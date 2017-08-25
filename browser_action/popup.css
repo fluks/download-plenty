@@ -1,0 +1,45 @@
+body {
+  margin: 5px;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  text-align: left;
+}
+
+.center {
+  text-align: center;
+}
+
+.download-column {
+  width: 5%;
+}
+
+.mime-column {
+  width: 15%;
+}
+
+.url-column {
+  width: 60%;
+}
+
+.bytes-column {
+  width: 15%;
+}
+
+[class*="-header"] {
+  border: none;
+}
+
+#download-button {
+  float: left;
+  margin: 5px 0 0 5px;
+}
+
+#directory-button {
+  float: right;
+  margin: 5px 5px 0 0;
+}
