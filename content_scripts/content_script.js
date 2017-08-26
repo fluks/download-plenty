@@ -1,3 +1,9 @@
+/**
+ * @file A content script. Finds all the links in the web page, makes a HTTP
+ * HEAD request for all the links to get the mime types and content lengths of
+ * files. Then sends all the information back to the browser action.
+ */
+
 'use strict';
 
 /**

@@ -1,10 +1,19 @@
+/**
+ * @file Browser action script. When the browser action popup is opened, it
+ * notifies the content script to find all the links and some information about
+ * them and send that back to the popup. The information is then rendered onto
+ * the popup page. The files to be downloaded are choosed and sent to the
+ * background, which downloads the files and sends progress back to the popup.
+ */
+
 'use strict';
 
-/** */
+/** A constant for unknown mime type and content length. */
 const UNKNOWN = '?';
-/** */
+/** The data in the table. Array of Objects. */
 const g_tableData = [];
-/** */
+/** The direction of the table columns, ascending or descending. Keys :
+ * download, mime, url, bytes, all Integers. */
 const g_directions = { download: 1, mime: 1, url: 1, bytes: 1, };
 
 /**
@@ -46,6 +55,19 @@ const bytesToHuman = (bytes) => {
 };
 
 /**
+ * @param mime {String}
+ */
+const selectAllSameMimes = (mime) => {
+    g_tableData.forEach(row => {
+        if (row.mime === mime) {
+            const dlCheckbox = row.tr.querySelector('.download-select');
+            dlCheckbox.dispatchEvent(new Event('change'));
+            dlCheckbox.checked = !dlCheckbox.checked;
+        }
+    });
+};
+
+/**
  * @param data {Object}
  * @param i {Integer}
  * @return {HTMLElement}
@@ -58,14 +80,19 @@ const createTableRow = (data, i) => {
         '<td class="bytes-column"><span class="bytes-text"></span></td>';
     const tr = document.createElement('tr');
     tr.innerHTML = downloadRow;
+    // XXX Can this be a circular reference, leak or something?
+    g_tableData[i].tr = tr;
 
     const dlCheckbox = tr.getElementsByClassName('download-select')[0];
     dlCheckbox.checked = data.download;
     dlCheckbox.addEventListener('change', (e) => {
-        console.log(g_tableData[i].url);
         g_tableData[i].download = !g_tableData[i].download;
     });
-    tr.getElementsByClassName('mime-text')[0].textContent = data.mime;
+
+    const mime = tr.getElementsByClassName('mime-text')[0];
+    mime.textContent = data.mime;
+    mime.addEventListener('click', (e) => selectAllSameMimes(g_tableData[i].mime));
+
     tr.getElementsByClassName('url-text')[0].textContent = data.url;
     tr.getElementsByClassName('bytes-text')[0].textContent = bytesToHuman(data.bytes);
 
@@ -87,7 +114,7 @@ const fillDownloads = (msg, tbody) => {
         /*const url = getFilenameFromURL(msg.url);*/
         const dataRow = {
             download: false,
-            mime: msg.mime ? msg.mime.split(';', 1)[0] : '?',
+            mime: msg.mime ? msg.mime.split(';', 1)[0] : UNKNOWN,
             url: msg.url,
             bytes: parseInt(msg.bytes),
         };
