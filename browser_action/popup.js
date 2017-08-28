@@ -15,6 +15,9 @@ const g_tableData = [];
 /** The direction of the table columns, ascending or descending. Keys :
  * download, mime, url, bytes, all Integers. */
 const g_directions = { download: 1, mime: 1, url: 1, bytes: 1, };
+/** */
+const SELECT_DOWNLOAD = 0,
+    UNSELECT_DOWNLOAD = 1;
 
 /**
  * @param url {String}
@@ -55,15 +58,40 @@ const bytesToHuman = (bytes) => {
 };
 
 /**
- * @param mime {String}
+ * @param elem {HTMLElement}
  */
-const selectAllSameMimes = (mime) => {
+const changeData = (elem) => {
+    elem.dispatchEvent(new Event('change'));
+};
+
+/**
+ * @param row {}
+ * @param change {Integer}
+ */
+const selectRow = (row, change) => {
+    const dlCheckbox = row.tr.querySelector('.download-select');
+
+    if (change === SELECT_DOWNLOAD && !dlCheckbox.checked) {
+        // XXX Checking or unchecking the checkbox doesn't change the backing
+        // data, the event needs to be fired to change it. Figure out a way
+        // to do this in a more elegant manner. Or just add a function.
+        changeData(dlCheckbox);
+        dlCheckbox.checked = true;
+    }
+    else if (change === UNSELECT_DOWNLOAD && dlCheckbox.checked) {
+        changeData(dlCheckbox);
+        dlCheckbox.checked = false;
+    }
+};
+
+/**
+ * @param mime {String}
+ * @param select {Boolean}
+ */
+const selectAllSameMimes = (mime, select) => {
     g_tableData.forEach(row => {
-        if (row.mime === mime) {
-            const dlCheckbox = row.tr.querySelector('.download-select');
-            dlCheckbox.dispatchEvent(new Event('change'));
-            dlCheckbox.checked = !dlCheckbox.checked;
-        }
+        if (row.mime === mime)
+            selectRow(row, select);
     });
 };
 
@@ -91,7 +119,10 @@ const createTableRow = (data, i) => {
 
     const mime = tr.getElementsByClassName('mime-text')[0];
     mime.textContent = data.mime;
-    mime.addEventListener('click', (e) => selectAllSameMimes(g_tableData[i].mime));
+    mime.addEventListener('click', (e) => {
+        const select = g_tableData[i].download ? UNSELECT_DOWNLOAD : SELECT_DOWNLOAD;
+        selectAllSameMimes(g_tableData[i].mime, select);
+    });
 
     tr.getElementsByClassName('url-text')[0].textContent = data.url;
     tr.getElementsByClassName('bytes-text')[0].textContent = bytesToHuman(data.bytes);
@@ -196,7 +227,7 @@ const sortTable = (e) => {
     const match = e.target.className.match(/^(\w+)-header$/);
     if (match) {
         const tbody = document.querySelector('tbody');
-        removeAllChildren(tbody)
+        removeAllChildren(tbody);
 
         const column = match[1];
         let i = 0;
@@ -242,7 +273,26 @@ const getDownloads = () => {
 
 };
 
+/**
+ * @param e {}
+ */
+const selectRowsByURLRegex = (e) => {
+    const pattern = e.target.value;
+
+    if (pattern.length === 0) {
+        g_tableData.forEach(row => selectRow(row, UNSELECT_DOWNLOAD));
+        return;
+    }
+
+    const regex = new RegExp(pattern, 'i');
+    g_tableData.forEach(row => {
+        selectRow(row, regex.test(row.url) ? SELECT_DOWNLOAD : UNSELECT_DOWNLOAD);
+    });
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
+document.querySelector('#select-rows-by-url').addEventListener('input',
+    selectRowsByURLRegex);
