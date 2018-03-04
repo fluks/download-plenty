@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Download Them All",
+    "name": "DownloadThemAll",
     "version": "0.1.0",
     "description": "__MSG_extensionDescription__",
 
@@ -16,6 +16,10 @@
         }
     },
 
+    "background": {
+        "scripts": [ "background/background.js" ]
+    },
+
     "content_scripts": [
         {
             "matches": [ "*://*/*" ],
@@ -23,20 +27,16 @@
         }
     ],
 
-    "background": {
-        "scripts": [ "background/background.js" ]
-    },
-
-    "browser_action" : {
-        "default_title": "Download Them All",
+    "browser_action": {
+        "browser_style": true,
         "default_icon": "data/logo.svg",
-        "default_popup": "browser_action/popup.html",
-        "browser_style": true
+        "default_title": "DownloadThemAll",
+        "default_popup": "browser_action/popup.html"
     },
 
     "permissions": [
         "activeTab",
-        "*://*/*",
+        "<all_urls>",
         "downloads"
     ]
 }
