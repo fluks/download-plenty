@@ -2,3 +2,6 @@ doc/
 *.xpi
 *.zip
 TODO
+node_modules/
+package-lock.json
+npm-debug.log
