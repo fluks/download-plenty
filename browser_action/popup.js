@@ -37,24 +37,62 @@ const getFilenameFromURL = (url) => {
 
 /**
  * @param bytes {Integer}
+ * @param [addUnit=false] {Boolean}
+ * @param [toUnit=''] {String}
  * @return {String}
  */
-const bytesToHuman = (bytes) => {
+const bytesToHuman = (bytes, addUnit=false, toUnit='') => {
     if (isNaN(bytes))
         return UNKNOWN;
+
     const map = [
-        { unit: '',   size: 1 << 10, },
-        { unit: 'kB', size: 1 << 20, },
-        { unit: 'MB', size: 1 << 30, },
-        { unit: 'GB', size: 1 << 40, },
-        { unit: 'TB', size: 1 << 50, },
+        { unit: 'B',  size: Math.pow(2, 10), },
+        { unit: 'KB', size: Math.pow(2, 20), },
+        { unit: 'MB', size: Math.pow(2, 30), },
+        { unit: 'GB', size: Math.pow(2, 40), },
+        { unit: 'TB', size: Math.pow(2, 50), },
+        { unit: 'PB', size: Math.pow(2, 60), },
     ];
-    let i = 0;
-    for (; i < map.length; i++) {
-        if (bytes < map[i].size)
-            return (bytes / (map[i].size >> 10)).toFixed(map[i].unit ? 1 : 0) + map[i].unit;
+
+    if (toUnit) {
+        const unit = map.find(e => e.unit === toUnit);
+        if (!unit)
+            return UNKNOWN;
+        bytes /= (unit.size / 1024);
+        bytes = bytes.toFixed(unit.unit === 'B' ? 0 : 1);
+        if (addUnit)
+            bytes += unit.unit;
     }
-    return (bytes / (map[i - 1].size >> 10)).toFixed(1) + 'PB';
+    else {
+        let i = 0;
+        for (; i < map.length && bytes > map[i].size; i++)
+            bytes /= 1024;
+        bytes = bytes.toFixed(map[i].unit === 'B' ? 0 : 1);
+        if (addUnit)
+            bytes += map[i].unit;
+    }
+
+    return bytes;
+};
+
+/**
+ * @param bytes {Integer}
+ * @return {String}
+ */
+const goodUnitForBytes = (bytes) => {
+    if (isNaN(bytes))
+        return '';
+    else if (bytes < Math.pow(2, 10))
+        return 'B';
+    else if (bytes < Math.pow(2, 20))
+        return 'KB';
+    else if (bytes < Math.pow(2, 30))
+        return 'MB';
+    else if (bytes < Math.pow(2, 40))
+        return 'GB';
+    else if (bytes < Math.pow(2, 50))
+        return 'TB';
+    return 'PB';
 };
 
 /**
@@ -125,7 +163,9 @@ const createTableRow = (data, i) => {
     });
 
     tr.getElementsByClassName('url-text')[0].textContent = data.url;
-    tr.getElementsByClassName('bytes-text')[0].textContent = bytesToHuman(data.bytes);
+    const toUnit = goodUnitForBytes(data.bytes);
+    tr.getElementsByClassName('bytes-text')[0].textContent =
+        bytesToHuman(data.bytes, true, toUnit);
 
     return tr;
 };
@@ -290,9 +330,49 @@ const selectRowsByURLRegex = (e) => {
     });
 };
 
+/**
+ * @param msg {Object}
+ */
+const updateDownloads = (msg) => {
+    const data = g_tableData.find(dl => dl.url === msg.url);
+    if (!data)
+        return;
+
+    const bytesElem = data.tr.querySelector('.bytes-text');
+    const bytesUnit = goodUnitForBytes(data.bytes);
+    if (msg.state === 'in_progress') {
+        bytesElem.textContent =
+            bytesToHuman(msg.bytesReceived, false, bytesUnit) + '/' +
+                bytesToHuman(data.bytes, true, bytesUnit);
+    }
+    else if (msg.state === 'complete') {
+        bytesElem.textContent =
+            bytesToHuman(data.bytes, false, bytesUnit) + '/' +
+                bytesToHuman(data.bytes, true, bytesUnit);
+    }
+};
+
+/**
+ * @param e {EventTarget}
+ */
+const startDownload = (e) => {
+    const port = chrome.runtime.connect({ name: 'download' });
+    port.onMessage.addListener((msg) => updateDownloads(msg));
+
+    g_tableData
+        .filter(dl => dl.download)
+        .forEach(dl => {
+            port.postMessage({
+                start: true,
+                url: dl.url,
+            });
+        });
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
 document.querySelector('#select-rows-by-url').addEventListener('input',
     selectRowsByURLRegex);
+document.querySelector('#download-button').addEventListener('click', startDownload);
