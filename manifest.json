@@ -20,23 +20,14 @@
         "scripts": [ "background/background.js" ]
     },
 
-    "content_scripts": [
-        {
-            "matches": [ "*://*/*" ],
-            "js": [ "content_scripts/content_script.js" ]
-        }
-    ],
-
     "browser_action": {
         "browser_style": true,
         "default_icon": "data/logo.svg",
-        "default_title": "DownloadThemAll",
-        "default_popup": "browser_action/popup.html"
+        "default_title": "DownloadThemAll"
     },
 
     "permissions": [
         "activeTab",
-        "<all_urls>",
         "downloads"
     ]
 }

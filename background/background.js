@@ -49,3 +49,14 @@ const download = (port) => {
 };
 
 chrome.runtime.onConnect.addListener(download);
+
+chrome.browserAction.onClicked.addListener(tab => {
+    chrome.tabs.executeScript(tab.id, {
+        file: 'content_scripts/content_script.js',
+    });
+
+    chrome.tabs.create({
+        url: chrome.runtime.getURL('download_popup/popup.html'),
+        index: tab.index + 1,
+    });
+});

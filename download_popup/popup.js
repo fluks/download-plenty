@@ -303,14 +303,13 @@ const sortTable = (e) => {
  * Notify content script to grab all the links in the web page and create the
  * downloads table.
  */
-const getDownloads = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-        const port = chrome.tabs.connect(tabs[0].id, { name: 'getDownloads' });
-        const tbody = document.querySelector('tbody');
-        port.onMessage.addListener((msg) => fillDownloads(msg, tbody));
-        port.postMessage({ start: true });
-    });
-
+const getDownloads = async () => {
+    const thisTabs = await browser.tabs.query({ active: true, currentWindow: true });
+    const downladTabs = await browser.tabs.query({ index: thisTabs[0].index - 1, });
+    const port = browser.tabs.connect(downladTabs[0].id, { name: 'getDownloads' });
+    const tbody = document.querySelector('tbody');
+    port.onMessage.addListener((msg) => fillDownloads(msg, tbody));
+    port.postMessage({ start: true });
 };
 
 /**
