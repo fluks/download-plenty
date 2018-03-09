@@ -368,10 +368,35 @@ const startDownload = (e) => {
         });
 };
 
+/**
+ * @param e {EventTarget}
+ */
+const copyToClipboard = (e) => {
+    e.preventDefault();
+
+    const urls = g_tableData
+        .filter(dl => dl.download)
+        .map(dl => dl.url)
+        .join('\n');
+    e.clipboardData.setData('text/plain', urls);
+    document.removeEventListener('copy', copyToClipboard);
+};
+
+/**
+ * @param e {EventTarget}
+ */
+const saveSelectedURLsToClipboard = (e) => {
+    document.addEventListener('copy', copyToClipboard);
+    document.execCommand('copy');
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
-document.querySelector('#select-rows-by-url').addEventListener('input',
-    selectRowsByURLRegex);
-document.querySelector('#download-button').addEventListener('click', startDownload);
+document.querySelector('#select-rows-by-url')
+    .addEventListener('input', selectRowsByURLRegex);
+document.querySelector('#download-button')
+    .addEventListener('click', startDownload);
+document.querySelector('#clipboard-button')
+    .addEventListener('click', saveSelectedURLsToClipboard);
