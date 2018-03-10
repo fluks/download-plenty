@@ -390,6 +390,24 @@ const saveSelectedURLsToClipboard = (e) => {
     document.execCommand('copy');
 };
 
+/**
+ * @param e {EventTarget}
+ */
+const saveSelectedURLsToFile = (e) => {
+    const urls = g_tableData
+        .filter(dl => dl.download)
+        .map(dl => dl.url)
+        .join('\n');
+
+    const filename = 'urls.txt';
+    const file = new File([ urls ], filename);
+
+    const link = document.querySelector('#save-link');
+    link.href = URL.createObjectURL(file);
+    link.download = filename;
+    link.click();
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
@@ -400,3 +418,5 @@ document.querySelector('#download-button')
     .addEventListener('click', startDownload);
 document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
+document.querySelector('#save-button')
+    .addEventListener('click', saveSelectedURLsToFile);
