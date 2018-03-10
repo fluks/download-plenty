@@ -10,7 +10,7 @@
  * @param that {}
  * @param url {String}
  */
-var onLoad = (that, url, port) => {
+const onLoad = (that, url, port) => {
     port.postMessage({
         url: url,
         status: that.status,
@@ -23,7 +23,7 @@ var onLoad = (that, url, port) => {
  * @param that {}
  * @param url {String}
  */
-var onError = (that, url) => {
+const onError = (that, url) => {
     console.log(`status: ${that.status}\nurl: ${url}`);
 };
 
@@ -31,7 +31,7 @@ var onError = (that, url) => {
  * @param url {String}
  * @param port {}
  */
-var head = (url, port) => {
+const head = (url, port) => {
     const req = new XMLHttpRequest();
     req.addEventListener('load', function() {
         onLoad(this, url, port);
@@ -46,7 +46,7 @@ var head = (url, port) => {
 /**
  * @param port {}
  */
-var getDownloads = (port) => {
+const getDownloads = (port) => {
     if (port.name !== 'getDownloads')
         return;
 
