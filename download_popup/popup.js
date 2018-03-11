@@ -275,7 +275,7 @@ const sortTable = (e) => {
             let result = 0;
             switch (column) {
                 case 'download':
-                    result = compareDownload(a.download, b.download);
+                    result = compareDownload(b.download, a.download);
                     break;
                 case 'mime':
                     result = compareMime(a.mime, b.mime);
