@@ -28,6 +28,7 @@
 
     "permissions": [
         "activeTab",
+        "<all_urls>",
         "downloads"
     ]
 }
