@@ -1,21 +1,21 @@
 js := \
 	background/*.js \
 	content_scripts/*.js \
-	browser_action/*.js
+	download_popup/*.js
 locale_files := $(shell find _locales -type f)
 common_files := \
 	$(locale_files) \
 	$(js) \
 	manifest.json \
 	data/* \
-	browser_action/*
+	download_popup/*
 firefox_files := \
 	$(common_files)
 chromium_files := \
 	$(common_files)
 
 # My node version is old, this adds Array.includes support.
-node := /home/john/Downloads/node-v9.4.0-linux-x86/bin/node
+node := ~/Downloads/node-v9.4.0-linux-x86/bin/node
 # Needed if you want to pass options for node.
 web-ext := node_modules/web-ext/bin/web-ext
 firefox-bin := ~/Downloads/firefox-dev/firefox
@@ -26,9 +26,9 @@ ff-profile := dev-edition-default
 run:
 	$(node) $(web-ext) \
 		-f $(firefox-bin) \
-		-u https://www.thinkbroadband.com/download \
 		-u about:debugging \
 		-u about:addons \
+		-u https://www.thinkbroadband.com/download \
 		-p $(ff-profile) \
 		run
 
@@ -47,8 +47,8 @@ change_to_chromium:
 lint:
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),json_xs -f json < $(file) 1>/dev/null;)
-	eslint --env es6 $(js)
-	$(node) $(web-ext) lint -i doc/*
+	-eslint --env es6 $(js)
+	$(node) $(web-ext) lint -i doc/* node_modules/*
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
