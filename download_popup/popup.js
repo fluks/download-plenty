@@ -143,7 +143,8 @@ const createTableRow = (data, i) => {
         '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
         '<td class="mime-column"><span class="mime-text"></span></td>' +
         '<td class="url-column"><span class="url-text"></span></td>' +
-        '<td class="bytes-column"><span class="bytes-text"></span></td>';
+        '<td class="bytes-column"><span class="bytes-text"></span></td>' +
+        '<td class="time-left-column"><span class="time-left-text"></span></td>';
     const tr = document.createElement('tr');
     tr.innerHTML = downloadRow;
     // XXX Can this be a circular reference, leak or something?
@@ -330,6 +331,41 @@ const selectRowsByURLRegex = (e) => {
 };
 
 /**
+ * Add zero before a number if the number is 0 <= number < 10.
+ * @param number {Integer}
+ * @return {String} The number itself if number < 0 or number >= 10, otherwise
+ * zero added before the number.
+ */
+const addZeroIfSingleDigit = (number) => {
+    return (number < 10 && number >= 0) ? `0${number}` : number.toString();
+};
+
+/**
+ * Get time left for a download.
+ * @param estimatedEndTime {String} Estimated end time in ISO 8601 format.
+ * @return {String} Time left for a download in human form (hours, minutes
+ * and seconds). If we're past estimatedEndTime or if estimatedEndTime is
+ * invalid, return empty string.
+ */
+const humanTimeDiff = (estimatedEndTime) => {
+    let diff = new Date(estimatedEndTime) - Date.now();
+    if (isNaN(diff) || diff <= 0)
+        return '';
+
+    diff /= 1000;
+
+    const secs = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    const mins = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    const hours = Math.floor(diff);
+
+    return [ hours, mins, secs ]
+        .map(t => addZeroIfSingleDigit(t))
+        .join(':');
+};
+
+/**
  * @param msg {Object}
  */
 const updateDownloads = (msg) => {
@@ -337,17 +373,23 @@ const updateDownloads = (msg) => {
     if (!data)
         return;
 
+    const timeLeftElem = data.tr.querySelector('.time-left-text');
     const bytesElem = data.tr.querySelector('.bytes-text');
     const bytesUnit = goodUnitForBytes(data.bytes);
+
     if (msg.state === 'in_progress') {
         bytesElem.textContent =
             bytesToHuman(msg.bytesReceived, false, bytesUnit) + '/' +
                 bytesToHuman(data.bytes, true, bytesUnit);
+
+        timeLeftElem.textContent = humanTimeDiff(msg.timeLeft);
     }
     else if (msg.state === 'complete') {
         bytesElem.textContent =
             bytesToHuman(data.bytes, false, bytesUnit) + '/' +
                 bytesToHuman(data.bytes, true, bytesUnit);
+
+        timeLeftElem.textContent = '';
     }
 };
 

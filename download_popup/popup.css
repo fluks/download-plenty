@@ -23,10 +23,14 @@ th {
 }
 
 .url-column {
-  width: 60%;
+  width: 45%;
 }
 
 .bytes-column {
+  width: 15%;
+}
+
+.time-left-column {
   width: 15%;
 }
 
