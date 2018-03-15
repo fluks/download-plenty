@@ -442,7 +442,8 @@ const saveSelectedURLsToFile = (e) => {
         .join('\n');
 
     const filename = 'urls.txt';
-    const file = new File([ urls ], filename);
+    const file = new File([ urls ], filename,
+        { type: 'application/octet-stream' });
 
     const link = document.querySelector('#save-link');
     link.href = URL.createObjectURL(file);
