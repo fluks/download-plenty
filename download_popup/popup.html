@@ -6,38 +6,44 @@
   </head>
   <body>
     <div id="button-div">
-      <button id="download-button">Download</button>
-      <button id="directory-button">Directory</button>
-      <button id="clipboard-button">Clipboard</button>
-      <button id="save-button">Save</button>
+      <button id="download-button" accesskey="d">Download</button>
+      <button id="directory-button" accesskey="i">Directory</button>
+      <div>
+        <span>Save Selected URLs</span>
+        <button id="clipboard-button" accesskey="c">Clipboard</button>
+        <button id="file-button" accesskey="f">File</button>
+      </div>
+      <div>
+        <label for="select-rows-by-url">URL Regex
+          <input type="text" id="select-rows-by-url" placeholder="Select rows by URL" accesskey="u"/>
+        </label>
+      </div>
       <a id="save-link"></a>
     </div>
-    <div>
-      <label for="select-rows-by-url">URL Regex</label>
-      <input type="text" id="select-rows-by-url" placeholder="Select rows by URL"/>
+    <div id="table-div">
+      <table>
+        <thead>
+          <tr>
+            <th><button class="download-header">Download</button></th>
+            <th><button class="mime-header">MIME Type</button></th>
+            <th><button class="url-header">URL</button></th>
+            <th><button class="bytes-header">Size</button></th>
+            <th><button class="time-left-header">Time Left</button></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th><button class="download-header">Download</button></th>
+            <th><button class="mime-header">MIME Type</button></th>
+            <th><button class="url-header">URL</button></th>
+            <th><button class="bytes-header">Size</button></th>
+            <th><button class="time-left-header">Time Left</button></th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th><button class="download-header">Download</button></th>
-          <th><button class="mime-header">MIME Type</button></th>
-          <th><button class="url-header">URL</button></th>
-          <th><button class="bytes-header">Size</button></th>
-          <th><button class="time-left-header">Time Left</button></th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th><button class="download-header">Download</button></th>
-          <th><button class="mime-header">MIME Type</button></th>
-          <th><button class="url-header">URL</button></th>
-          <th><button class="bytes-header">Size</button></th>
-          <th><button class="time-left-header">Time Left</button></th>
-        </tr>
-      </tfoot>
-    </table>
     <script src="popup.js"></script>
   </body>
 </html>

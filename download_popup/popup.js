@@ -465,5 +465,5 @@ document.querySelector('#download-button')
     .addEventListener('click', startDownload);
 document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
-document.querySelector('#save-button')
+document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
