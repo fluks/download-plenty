@@ -56,7 +56,7 @@ chrome.browserAction.onClicked.addListener(tab => {
     });
 
     chrome.tabs.create({
-        url: chrome.runtime.getURL('download_popup/popup.html'),
+        url: chrome.runtime.getURL('download_popup/popup.html?orig_tab_id=' + tab.id),
         index: tab.index + 1,
     });
 });
