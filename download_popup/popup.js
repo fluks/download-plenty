@@ -445,10 +445,14 @@ const saveSelectedURLsToFile = (e) => {
     const file = new File([ urls ], filename,
         { type: 'application/octet-stream' });
 
-    const link = document.querySelector('#save-link');
-    link.href = URL.createObjectURL(file);
-    link.download = filename;
-    link.click();
+    // Opens a new tab or a window.
+    window.open(URL.createObjectURL(file), '_blank',
+        'fullscreen=no,height=100,width=100');
+    //const link = document.querySelector('#save-link');
+    //link.addEventListener('click', () => URL.revokeObjectURL(file));
+    //link.href = URL.createObjectURL(file);
+    //link.download = filename;
+    //link.click();
 };
 
 document.addEventListener('DOMContentLoaded', getDownloads);
