@@ -47,6 +47,14 @@ const head = (url, port) => {
     req.send();
 };
 
+// Get all the downloadable elements immediately.
+const map = {
+    a: 'href',
+    img: 'src',
+};
+const tags = Object.keys(map);
+const elems = document.querySelectorAll(tags.join(','));
+
 /**
  * @param port {}
  */
@@ -56,12 +64,6 @@ const getDownloads = (port) => {
 
     port.onMessage.addListener(msg => {
         if (msg.start) {
-            const map = {
-                a: 'href',
-                img: 'src',
-            };
-            const tags = Object.keys(map);
-            const elems = document.querySelectorAll(tags.join(','));
             elems.forEach(e => {
                 const attr = map[e.nodeName.toLowerCase()];
                 if (!attr)
