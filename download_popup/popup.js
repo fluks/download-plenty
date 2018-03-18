@@ -305,8 +305,10 @@ const sortTable = (e) => {
  * downloads table.
  */
 const getDownloads = async () => {
-    const originalTabId = parseInt(
-        new URL(location.href).searchParams.get('orig_tab_id'));
+    const url = new URL(location.href);
+    document.querySelector('title').textContent += ' - ' + url.searchParams.get('orig_url');
+    const originalTabId = parseInt(url.searchParams.get('orig_tab_id'));
+
     const port = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
     const tbody = document.querySelector('tbody');
     port.onMessage.addListener((msg) => fillDownloads(msg, tbody));

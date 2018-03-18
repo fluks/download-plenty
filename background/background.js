@@ -55,8 +55,11 @@ chrome.browserAction.onClicked.addListener(tab => {
         file: 'content_scripts/content_script.js',
     });
 
+    const url = 'download_popup/popup.html?' +
+        'orig_tab_id=' + tab.id + '&' +
+        'orig_url=' + tab.url;
     chrome.tabs.create({
-        url: chrome.runtime.getURL('download_popup/popup.html?orig_tab_id=' + tab.id),
+        url: chrome.runtime.getURL(url),
         index: tab.index + 1,
     });
 });
