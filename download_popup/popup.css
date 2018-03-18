@@ -20,10 +20,14 @@ th {
 
 .download-column {
   width: 5%;
+tr:nth-child(odd) {
+  background: rgba(219, 219, 219, .3);
 }
 
 .mime-column {
   width: 15%;
+tr:nth-child(even) {
+  background: rgba(182, 182, 182, .3);
 }
 
 .url-column {
@@ -40,6 +44,7 @@ th {
 
 [class*="-header"] {
   border: none;
+  width: 100%;
 }
 
 #download-button {
@@ -58,9 +63,11 @@ th {
   z-index: 1;
   background-color: #ffffff;
   width: 100%;
-  height: 90px;
+  height: 95px;
+  margin: 0;
+  border-bottom: solid 1px #929292;
 }
 
 #table-div {
-  padding-top: 90px;
+  padding-top: 95px;
 }
