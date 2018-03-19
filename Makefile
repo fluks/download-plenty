@@ -28,7 +28,8 @@ run:
 		-f $(firefox-bin) \
 		-u about:debugging \
 		-u about:addons \
-		-u https://www.thinkbroadband.com/download \
+		-u https://www.turnkeyinternet.net/speed-test/ \
+		-u https://eloquentjavascript.net \
 		-p $(ff-profile) \
 		run
 
