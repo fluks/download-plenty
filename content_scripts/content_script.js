@@ -6,10 +6,6 @@
 
 'use strict';
 
-(function() {
-    if (loaded)
-        return;
-
 /**
  * @param that {}
  * @param url {String}
@@ -77,6 +73,3 @@ const getDownloads = (port) => {
 };
 
 chrome.runtime.onConnect.addListener(getDownloads);
-
-    var loaded = true;
-})();
