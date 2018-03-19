@@ -163,7 +163,9 @@ const createTableRow = (data, i) => {
         selectAllSameMimes(g_tableData[i].mime, select);
     });
 
-    tr.getElementsByClassName('url-text')[0].textContent = data.url;
+    const urlText = tr.getElementsByClassName('url-text')[0];
+    urlText.textContent = data.url;
+    urlText.setAttribute('title', data.url);
     const toUnit = goodUnitForBytes(data.bytes);
     tr.getElementsByClassName('bytes-text')[0].textContent =
         bytesToHuman(data.bytes, true, toUnit);

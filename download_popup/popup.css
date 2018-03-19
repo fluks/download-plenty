@@ -8,6 +8,7 @@ body {
 
 table {
   width: 100%;
+  table-layout: fixed;
 }
 
 th {
@@ -18,30 +19,39 @@ th {
   text-align: center;
 }
 
-.download-column {
-  width: 5%;
 tr:nth-child(odd) {
   background: rgba(219, 219, 219, .3);
 }
 
-.mime-column {
-  width: 15%;
 tr:nth-child(even) {
   background: rgba(182, 182, 182, .3);
 }
 
+#download-width {
+  width: 10%;
+}
+
+#mime-width {
+  width: 15%;
+}
+
+#url-width {
+  width: 50%;
+}
+
+#bytes-width {
+  width: 15%;
+}
+
+#time-left-width {
+  width: 10%;
+}
+
 .url-column {
-  width: 45%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
-
-.bytes-column {
-  width: 15%;
-}
-
-.time-left-column {
-  width: 15%;
-}
-
 [class*="-header"] {
   border: none;
   width: 100%;
