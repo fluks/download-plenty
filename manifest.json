@@ -26,9 +26,15 @@
         "default_title": "DownloadThemAll"
     },
 
+    "options_ui": {
+        "page": "options/options.html",
+        "browser_style": true
+    },
+
     "permissions": [
         "activeTab",
         "<all_urls>",
-        "downloads"
+        "downloads",
+        "storage"
     ]
 }

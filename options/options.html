@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="options.css" />
+  </head>
+  <body>
+    <form>
+      <label id="mime-label" accesskey="m">Filter MIME Types
+        <select id="mime-types" multiple>
+          <option value="application">application</option>
+          <option value="audio">audio</option>
+          <option value="font">font</option>
+          <option value="image">image</option>
+          <option value="message">message</option>
+          <option value="model">model</option>
+          <option value="multipart">multipart</option>
+          <option value="text">text</option>
+          <option value="video">video</option>
+        </select>
+      </label>
+      <div>
+        <button id="save-button" accesskey="s">Save</button>
+      </div>
+      <div>
+        <span id="save-notification">Settings Saved</span>
+      </div>
+    </form>
+    <script src="options.js"></script>
+  </body>
+</html>

@@ -52,15 +52,24 @@ tr:nth-child(even) {
   overflow: hidden;
   white-space: nowrap;
 }
+
 [class*="-header"] {
   border: none;
   width: 100%;
 }
 
-#download-button {
+#top-div {
+  float: left;
+  width: 100%;
 }
 
-#directory-button {
+#download-button, #directory-button {
+  float: left;
+}
+
+#open-options-button {
+  float: right;
+  margin-right: 10px;
 }
 
 #save-link {

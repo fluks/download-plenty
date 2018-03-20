@@ -20,22 +20,6 @@ const SELECT_DOWNLOAD = 0,
     UNSELECT_DOWNLOAD = 1;
 
 /**
- * @param url {String}
- * @return {String}
- */
-const getFilenameFromURL = (url) => {
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    const path = a.pathname ? a.pathname.split('/').pop() : '';
-    if (path)
-        return path;
-    const search = a.search;
-    if (search)
-        return search;
-    return '';
-};
-
-/**
  * @param bytes {Integer}
  * @param [addUnit=false] {Boolean}
  * @param [toUnit=''] {String}
@@ -173,6 +157,18 @@ const createTableRow = (data, i) => {
     return tr;
 };
 
+/**
+ * Check if MIME type isn't shown.
+ * @param mime {String} MIME type of the downloadable element.
+ * @param mimeFilters {Object} MIME types which should be shown.
+ * @return {Boolean} Return true if this type of donwloadable element
+ * shouldn't be shown. If mime is null or undefined, return false.
+ */
+const isMimeFiltered = (mime, mimeFilters) => {
+    const mimeStart = mime.split('/', 1)[0];
+    return mimeFilters[mimeStart] === false;
+};
+
 let g_dataRowIndex = 0;
 /**
  * Forms table's data and rows from the content script's response.
@@ -182,10 +178,10 @@ let g_dataRowIndex = 0;
  * mime {String} MIME Type of link
  * bytes {String} Link's content length.
  * @param tbody {HTMLElement} Table's element where the rows are appended.
+ * @param mimeFilters {Object} MIME types which should be shown.
  */
-const fillDownloads = (msg, tbody) => {
-    if (msg.status === 200) {
-        /*const url = getFilenameFromURL(msg.url);*/
+const fillDownloads = (msg, tbody, mimeFilters) => {
+    if (msg.status === 200 && !isMimeFiltered(msg.mime, mimeFilters)) {
         const dataRow = {
             download: false,
             mime: msg.mime ? msg.mime.split(';', 1)[0] : UNKNOWN,
@@ -313,7 +309,8 @@ const getDownloads = async () => {
 
     const port = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
     const tbody = document.querySelector('tbody');
-    port.onMessage.addListener((msg) => fillDownloads(msg, tbody));
+    const options = await browser.storage.sync.get(null);
+    port.onMessage.addListener((msg) => fillDownloads(msg, tbody, options.mimeFilters));
     port.postMessage({ start: true });
 };
 
@@ -471,3 +468,6 @@ document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
 document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
+document.querySelector('#open-options-button').addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+});
