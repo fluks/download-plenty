@@ -1,14 +1,16 @@
 js := \
 	background/*.js \
 	content_scripts/*.js \
-	download_popup/*.js
+	download_popup/*.js \
+	options/*.js
 locale_files := $(shell find _locales -type f)
 common_files := \
 	$(locale_files) \
 	$(js) \
 	manifest.json \
 	data/* \
-	download_popup/*
+	download_popup/* \
+	options/*
 firefox_files := \
 	$(common_files)
 chromium_files := \
