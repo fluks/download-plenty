@@ -72,10 +72,6 @@ tr:nth-child(even) {
   margin-right: 10px;
 }
 
-#save-link {
-  visibility: hidden; 
-}
-
 #button-div {
   position: fixed;
   top: 0;
@@ -89,4 +85,10 @@ tr:nth-child(even) {
 
 #table-div {
   padding-top: 95px;
+}
+
+iframe {
+  visibility: hidden;
+  width: 0;
+  height: 0;
 }
