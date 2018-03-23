@@ -31,11 +31,11 @@ const bytesToHuman = (bytes, addUnit=false, toUnit='') => {
 
     const map = [
         { unit: 'B',  size: Math.pow(2, 10), },
-        { unit: 'KB', size: Math.pow(2, 20), },
-        { unit: 'MB', size: Math.pow(2, 30), },
-        { unit: 'GB', size: Math.pow(2, 40), },
-        { unit: 'TB', size: Math.pow(2, 50), },
-        { unit: 'PB', size: Math.pow(2, 60), },
+        { unit: 'KiB', size: Math.pow(2, 20), },
+        { unit: 'MiB', size: Math.pow(2, 30), },
+        { unit: 'GiB', size: Math.pow(2, 40), },
+        { unit: 'TiB', size: Math.pow(2, 50), },
+        { unit: 'PiB', size: Math.pow(2, 60), },
     ];
 
     if (toUnit) {
@@ -69,14 +69,14 @@ const goodUnitForBytes = (bytes) => {
     else if (bytes < Math.pow(2, 10))
         return 'B';
     else if (bytes < Math.pow(2, 20))
-        return 'KB';
+        return 'KiB';
     else if (bytes < Math.pow(2, 30))
-        return 'MB';
+        return 'MiB';
     else if (bytes < Math.pow(2, 40))
-        return 'GB';
+        return 'GiB';
     else if (bytes < Math.pow(2, 50))
-        return 'TB';
-    return 'PB';
+        return 'TiB';
+    return 'PiB';
 };
 
 /**
