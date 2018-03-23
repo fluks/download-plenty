@@ -63,7 +63,7 @@ tr:nth-child(even) {
   width: 100%;
 }
 
-#download-button, #directory-button {
+#download-button {
   float: left;
 }
 
