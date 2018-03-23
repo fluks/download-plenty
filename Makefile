@@ -36,10 +36,10 @@ run:
 		run
 
 firefox: change_to_firefox
-	zip -r downloadthemall.xpi $(firefox_files)
+	zip -r downloadplenty.xpi $(firefox_files)
 
 chromium: change_to_chromium
-	zip downloadthemall.zip $(chromium_files)
+	zip downloadplenty.zip $(chromium_files)
 
 change_to_firefox:
 	cp firefox/manifest.json .

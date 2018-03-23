@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "DownloadThemAll",
+    "name": "Download Plenty",
     "version": "0.1.0",
     "description": "__MSG_extensionDescription__",
 
@@ -12,7 +12,7 @@
 
     "applications": {
         "gecko": {
-            "id": "downloadthemall@fluks"
+            "id": "downloadplenty@fluks"
         }
     },
 
@@ -23,7 +23,7 @@
     "browser_action": {
         "browser_style": true,
         "default_icon": "data/logo.svg",
-        "default_title": "DownloadThemAll"
+        "default_title": "Download Plenty"
     },
 
     "options_ui": {
