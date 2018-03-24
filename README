@@ -1,4 +1,21 @@
-data/logo.svg
+DESCRIPTION
 
-Licensed as GPL2 or GPL3.
+Download manager addon for Firefox.
+
+USAGE
+
+Files are downloaded by selecting them on an individual basis, using a regular
+expression to match the URLs or by pressing the MIME type, which selects (or
+unselects) all the files having the same MIME type. And then pressing the
+download button.
+
+You can sort the files by clicking on the column headers.
+
+The URLs of the selected files can be saved into a file or to the clipboard.
+
+LICENSE
+
+GPL3.
+
+data/logo.svg licensed as GPL2 or GPL3.
 https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free
