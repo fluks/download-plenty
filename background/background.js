@@ -48,9 +48,11 @@ const download = (port) => {
     });
 };
 
-chrome.runtime.onConnect.addListener(download);
-
-chrome.browserAction.onClicked.addListener(tab => {
+/**
+ * Execute content script and open downloads tab.
+ * @param tab {tabs.Tab}
+ */
+const openDownloadsTab = (tab) => {
     chrome.tabs.executeScript(tab.id, {
         file: 'content_scripts/content_script.js',
     });
@@ -62,4 +64,8 @@ chrome.browserAction.onClicked.addListener(tab => {
         url: chrome.runtime.getURL(url),
         index: tab.index + 1,
     });
-});
+};
+
+chrome.runtime.onConnect.addListener(download);
+
+chrome.browserAction.onClicked.addListener(openDownloadsTab);
