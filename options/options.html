@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="options.css" />
+    <link rel="stylesheet" type="text/css" href="../common/common.css"/>
   </head>
   <body>
     <form>
-      <label id="mime-label" accesskey="m">Filter MIME Types
+      <label id="mime-label" accesskey="m">
+        Filter <span class="accesskey">M</span>IME Types
         <select id="mime-types" multiple>
           <option value="application">application</option>
           <option value="audio">audio</option>
@@ -20,7 +22,9 @@
         </select>
       </label>
       <div>
-        <button id="save-button" accesskey="s">Save</button>
+        <button id="save-button" accesskey="s">
+          <span class="accesskey">S</span>ave
+        </button>
       </div>
       <div>
         <span id="save-notification">Settings Saved</span>

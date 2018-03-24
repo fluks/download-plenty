@@ -4,21 +4,31 @@
     <meta charset="utf-8"/>
     <title>Download Plenty</title>
     <link rel="stylesheet" type="text/css" href="popup.css"/>
+    <link rel="stylesheet" type="text/css" href="../common/common.css"/>
     <link rel="shortcut icon" href="../data/logo.svg"/>
   </head>
   <body>
     <div id="button-div">
       <div id="top-div">
-        <button id="download-button" accesskey="d">Download</button>
-        <button id="open-options-button" accesskey="o">Options</button>
+        <button id="download-button" accesskey="d">
+          <span class="accesskey">D</span>ownload
+        </button>
+        <button id="open-options-button" accesskey="o">
+          <span class="accesskey">O</span>ptions
+        </button>
       </div>
       <div>
         <span>Save Selected URLs</span>
-        <button id="clipboard-button" accesskey="c">Clipboard</button>
-        <button id="file-button" accesskey="f">File</button>
+        <button id="clipboard-button" accesskey="c">
+          <span class="accesskey">C</span>lipboard
+        </button>
+        <button id="file-button" accesskey="f">
+          <span class="accesskey">F</span>ile
+        </button>
       </div>
       <div>
-        <label for="select-rows-by-url">URL Regex
+        <label for="select-rows-by-url">
+          <span class="accesskey">U</span>RL Regex
           <input type="text" id="select-rows-by-url" placeholder="Select files by URL" accesskey="u"/>
         </label>
       </div>
