@@ -32,7 +32,7 @@ const setOptions = (details) => {
  * @param startTimeInterval {Date}
  */
 const sendProgress = (port, progressInterval, startTimeInterval) => {
-    chrome.downloads.search({ startedAfter: startedAfterInterval },
+    chrome.downloads.search({ startedAfter: startTimeInterval },
             (downloads) => {
 
         let inProgressDls = 0;
