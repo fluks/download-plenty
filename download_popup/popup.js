@@ -377,11 +377,15 @@ const updateDownloads = (msg) => {
     const timeLeftElem = data.tr.querySelector('.time-left-text');
     const bytesElem = data.tr.querySelector('.bytes-text');
     const bytesUnit = goodUnitForBytes(data.bytes);
+    const bytesCol = data.tr.querySelector('.bytes-column');
 
     if (msg.state === 'in_progress') {
         bytesElem.textContent =
             bytesToHuman(msg.bytesReceived, false, bytesUnit) + '/' +
                 bytesToHuman(data.bytes, true, bytesUnit);
+        const percentFinished = (msg.bytesReceived / data.bytes) * 100;
+        bytesCol.style.background =
+            `linear-gradient(to right, lightgreen ${percentFinished}%, white ${percentFinished}%)`;
 
         timeLeftElem.textContent = humanTimeDiff(msg.timeLeft);
     }
@@ -389,6 +393,8 @@ const updateDownloads = (msg) => {
         bytesElem.textContent =
             bytesToHuman(data.bytes, false, bytesUnit) + '/' +
                 bytesToHuman(data.bytes, true, bytesUnit);
+        bytesCol.style.background =
+            `linear-gradient(to right, lightgreen 100%, white 100%)`;
 
         timeLeftElem.textContent = '';
     }
