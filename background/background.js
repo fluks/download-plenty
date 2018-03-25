@@ -28,13 +28,25 @@ const setOptions = (details) => {
 
 /**
  * @param port {}
- * @param progressInterval {}
+ * @param progressInterval {Number}
+ * @param startTimeInterval {Date}
  */
-const sendProgress = (port, progressInterval) => {
-    chrome.downloads.search({}, (downloads) => {
+const sendProgress = (port, progressInterval, startTimeInterval) => {
+    chrome.downloads.search({ startedAfter: startedAfterInterval },
+            (downloads) => {
 
+        let inProgressDls = 0;
         downloads.forEach(dl => {
-            if (dl.state === 'in_progress' || dl.state === 'complete') {
+            if (dl.state === 'in_progress') {
+                port.postMessage({
+                    state: dl.state,
+                    url: dl.url,
+                    bytesReceived: dl.bytesReceived,
+                    timeLeft: dl.estimatedEndTime,
+                });
+                inProgressDls++;
+            }
+            else if (dl.state === 'complete') {
                 port.postMessage({
                     state: dl.state,
                     url: dl.url,
@@ -43,6 +55,9 @@ const sendProgress = (port, progressInterval) => {
                 });
             }
         });
+
+        if (!inProgressDls)
+            clearInterval(progressInterval);
     });
 };
 
@@ -61,8 +76,9 @@ const download = (port) => {
             });
 
             if (!progressInterval) {
+                const startTime = Date.now();
                 progressInterval = setInterval(() =>
-                    sendProgress(port, progressInterval), 250);
+                    sendProgress(port, progressInterval, startTime), 250);
             }
         }
         else if (msg.pause) {
