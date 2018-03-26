@@ -118,19 +118,37 @@ const selectAllSameMimes = (mime, select) => {
 };
 
 /**
+ * Make data cells for a table row. Use sanitizer, because insertAdjacentHTML
+ * is used and even now user input is not used, maybe it will be later on.
+ * @return {String} Data cells for a table row.
+ */
+const sanitizeDownloadRow = () => {
+    const downloadRow = DOMPurify.sanitize(
+        // Without table and tr tags, tds are discarded.
+        '<table><tr>' +
+        '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
+        '<td class="mime-column"><span class="mime-text"></span></td>' +
+        '<td class="url-column"><span class="url-text"></span></td>' +
+        '<td class="bytes-column"><span class="bytes-text"></span></td>' +
+        '<td class="time-left-column"><span class="time-left-text"></span></td>' +
+        // Without table and tr tags, tds are discarded.
+        '</tr></table>');
+
+    // Remove table, tbody and tr tags.
+    return downloadRow.match(/(<td.*td>)/)[1];
+};
+
+// This needs to be created only once.
+const g_downloadRow = sanitizeDownloadRow();
+
+/**
  * @param data {Object}
  * @param i {Integer}
  * @return {HTMLElement}
  */
 const createTableRow = (data, i) => {
-    const downloadRow =
-        '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
-        '<td class="mime-column"><span class="mime-text"></span></td>' +
-        '<td class="url-column"><span class="url-text"></span></td>' +
-        '<td class="bytes-column"><span class="bytes-text"></span></td>' +
-        '<td class="time-left-column"><span class="time-left-text"></span></td>';
     const tr = document.createElement('tr');
-    tr.innerHTML = downloadRow;
+    tr.insertAdjacentHTML('afterbegin', g_downloadRow);
     // XXX Can this be a circular reference, leak or something?
     g_tableData[i].tr = tr;
 

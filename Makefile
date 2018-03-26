@@ -10,7 +10,8 @@ common_files := \
 	manifest.json \
 	data/* \
 	download_popup/* \
-	options/*
+	options/* \
+	common/*
 firefox_files := \
 	$(common_files)
 chromium_files := \
@@ -51,7 +52,7 @@ lint:
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),json_xs -f json < $(file) 1>/dev/null;)
 	-eslint --env es6 $(js)
-	$(node) $(web-ext) lint -i doc/* node_modules/*
+	$(node) $(web-ext) lint -i doc/* node_modules/* common/purify.js
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
