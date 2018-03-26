@@ -123,23 +123,23 @@ const selectAllSameMimes = (mime, select) => {
  * @return {String} Data cells for a table row.
  */
 const sanitizeDownloadRow = () => {
-    const downloadRow = DOMPurify.sanitize(
-        // Without table and tr tags, tds are discarded.
-        '<table><tr>' +
-        '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
-        '<td class="mime-column"><span class="mime-text"></span></td>' +
-        '<td class="url-column"><span class="url-text"></span></td>' +
-        '<td class="bytes-column"><span class="bytes-text"></span></td>' +
-        '<td class="time-left-column"><span class="time-left-text"></span></td>' +
-        // Without table and tr tags, tds are discarded.
-        '</tr></table>');
+    if (typeof this.downloadRow === 'undefined') {
+        const downloadRow = DOMPurify.sanitize(
+            // Without table and tr tags, tds are discarded.
+            '<table><tr>' +
+            '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
+            '<td class="mime-column"><span class="mime-text"></span></td>' +
+            '<td class="url-column"><span class="url-text"></span></td>' +
+            '<td class="bytes-column"><span class="bytes-text"></span></td>' +
+            '<td class="time-left-column"><span class="time-left-text"></span></td>' +
+            // Without table and tr tags, tds are discarded.
+            '</tr></table>');
+        // Remove table, tbody and tr tags.
+        this.downloadRow = downloadRow.match(/(<td.*td>)/)[1];
+    }
 
-    // Remove table, tbody and tr tags.
-    return downloadRow.match(/(<td.*td>)/)[1];
+    return this.downloadRow;
 };
-
-// This needs to be created only once.
-const g_downloadRow = sanitizeDownloadRow();
 
 /**
  * @param data {Object}
@@ -148,7 +148,7 @@ const g_downloadRow = sanitizeDownloadRow();
  */
 const createTableRow = (data, i) => {
     const tr = document.createElement('tr');
-    tr.insertAdjacentHTML('afterbegin', g_downloadRow);
+    tr.insertAdjacentHTML('afterbegin', sanitizeDownloadRow());
     // XXX Can this be a circular reference, leak or something?
     g_tableData[i].tr = tr;
 
