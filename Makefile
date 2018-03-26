@@ -11,7 +11,9 @@ common_files := \
 	data/* \
 	download_popup/* \
 	options/* \
-	common/*
+	common/* \
+	LICENSE \
+	README
 firefox_files := \
 	$(common_files)
 chromium_files := \
