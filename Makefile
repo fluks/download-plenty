@@ -11,6 +11,7 @@ common_files := \
 	data/* \
 	download_popup/* \
 	options/* \
+	l10n/* \
 	common/* \
 	LICENSE \
 	README
@@ -31,6 +32,7 @@ ff-profile := dev-edition-default
 run:
 	$(node) $(web-ext) \
 		-f $(firefox-bin) \
+		--pref intl.locale.requested=en \
 		-u about:debugging \
 		-u about:addons \
 		-u https://www.turnkeyinternet.net/speed-test/ \
@@ -54,7 +56,7 @@ lint:
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),json_xs -f json < $(file) 1>/dev/null;)
 	-eslint --env es6 $(js)
-	$(node) $(web-ext) lint -i doc/* node_modules/* common/purify.js
+	$(node) $(web-ext) lint -i doc/* node_modules/* common/purify.js l10n/l10n.js
 
 doc:
 	jsdoc -c conf.json -d doc $(js)

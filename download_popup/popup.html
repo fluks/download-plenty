@@ -6,31 +6,33 @@
     <link rel="stylesheet" type="text/css" href="popup.css"/>
     <link rel="stylesheet" type="text/css" href="../common/common.css"/>
     <link rel="shortcut icon" href="../data/logo.svg"/>
+    <script type="text/javascript" src="../l10n/l10n.js"></script>
+    <link rel="prefetch" type="application/l10n" href="../l10n/popup.ini" />
   </head>
   <body>
     <div id="button-div">
       <div id="top-div">
-        <button id="download-button" accesskey="d">
-          <span class="accesskey">D</span>ownload
+        <button id="download-button" data-l10n-id="downloadButton">
+          <span class="accesskey" accesskey="d">D</span>ownload
         </button>
-        <button id="open-options-button" accesskey="o">
-          <span class="accesskey">O</span>ptions
-        </button>
-      </div>
-      <div>
-        <span>Save Selected URLs</span>
-        <button id="clipboard-button" accesskey="c">
-          <span class="accesskey">C</span>lipboard
-        </button>
-        <button id="file-button" accesskey="f">
-          <span class="accesskey">F</span>ile
+        <button id="open-options-button" data-l10n-id="optionsButton">
+          <span class="accesskey" accesskey="o">O</span>ptions
         </button>
       </div>
       <div>
-        <label for="select-rows-by-url">
-          <span class="accesskey">U</span>RL Regex
-          <input type="text" id="select-rows-by-url" placeholder="Select files by URL" accesskey="u" title="Example: . to select all files."/>
+        <span data-l10n-id="saveSelectedURLsSpan">Save Selected URLs</span>
+        <button id="clipboard-button" data-l10n-id="clipboardButton">
+          <span class="accesskey" accesskey="c">C</span>lipboard
+        </button>
+        <button id="file-button" data-l10n-id="fileButton">
+          <span class="accesskey" accesskey="f">F</span>ile
+        </button>
+      </div>
+      <div>
+        <label for="select-rows-by-url" data-l10n-id="urlRegexLabel">
+          <span class="accesskey" accesskey="u">U</span>RL Regex
         </label>
+        <input type="text" id="select-rows-by-url" placeholder="Select files by URL" title="Example: . to select all files." data-l10n-id="selectFilesRegexInput"/>
       </div>
       <iframe srcdoc="<a id='save-link' href='' download></a>"></iframe>
     </div>
@@ -45,22 +47,22 @@
         </colgroup>
         <thead>
           <tr>
-            <th><button class="download-header">Download</button></th>
-            <th><button class="mime-header">MIME Type</button></th>
-            <th><button class="url-header">URL</button></th>
-            <th><button class="bytes-header">Size</button></th>
-            <th><button class="time-left-header">Time Left</button></th>
+            <th><button class="download-header" data-l10n-id="downloadHeader">Download</button></th>
+            <th><button class="mime-header" data-l10n-id="mimeHeader">MIME Type</button></th>
+            <th><button class="url-header" data-l10n-id="URLHeader">URL</button></th>
+            <th><button class="bytes-header" data-l10n-id="sizeHeader">Size</button></th>
+            <th><button class="time-left-header" data-l10n-id="timeLeftHeader">Time Left</button></th>
           </tr>
         </thead>
         <tbody>
         </tbody>
         <tfoot>
           <tr>
-            <th><button class="download-header">Download</button></th>
-            <th><button class="mime-header">MIME Type</button></th>
-            <th><button class="url-header">URL</button></th>
-            <th><button class="bytes-header">Size</button></th>
-            <th><button class="time-left-header">Time Left</button></th>
+            <th><button class="download-header" data-l10n-id="downloadHeader">Download</button></th>
+            <th><button class="mime-header" data-l10n-id="mimeHeader">MIME Type</button></th>
+            <th><button class="url-header" data-l10n-id="URLHeader">URL</button></th>
+            <th><button class="bytes-header" data-l10n-id="sizeHeader">Size</button></th>
+            <th><button class="time-left-header" data-l10n-id="timeLeftHeader">Time Left</button></th>
           </tr>
         </tfoot>
       </table>

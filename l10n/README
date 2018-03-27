@@ -1,0 +1,5 @@
+To localize the addon for a certain language:
+
+  - Install language pack of the wanted language
+  - Pass '--pref intl.locale.requested=$LANGUAGE_CODE' to web-ext run
+  - Add translations to _locales/$LANGUAGE_CODE/messages.json and l10n/*.ini files
