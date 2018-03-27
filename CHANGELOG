@@ -1,0 +1,10 @@
+v0.1.0 Mon Mar 26 21:25:16 2018 +0300
+
+  * Initial release.
+  * Features currently implemented:
+    - Download
+    - Filter MIME types
+    - Select by URL regex or MIME type
+    - Save URLs to a file or copy to clipboard
+    - Show progress
+    - Sort by some columns
