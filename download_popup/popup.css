@@ -58,21 +58,22 @@ tr:nth-child(even) {
   width: 100%;
 }
 
-#top-div {
-  float: left;
-  width: 100%;
+#table-div {
+  padding-top: 100px;
 }
 
-#download-button {
-  float: left;
+iframe {
+  visibility: hidden;
+  width: 0;
+  height: 0;
 }
 
-#open-options-button {
-  float: right;
-  margin-right: 10px;
-}
-
-#button-div {
+#grid {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  grid-template-areas: "a . a"
+                       "b b ."
+                       "c c .";
   position: fixed;
   top: 0;
   z-index: 1;
@@ -83,12 +84,10 @@ tr:nth-child(even) {
   border-bottom: solid 1px #929292;
 }
 
-#table-div {
-  padding-top: 100px;
+.pad-right {
+  padding: 0 10px 0 0;
 }
 
-iframe {
-  visibility: hidden;
-  width: 0;
-  height: 0;
+.center-vertical {
+  margin: auto 0;
 }

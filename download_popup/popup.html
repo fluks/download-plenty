@@ -10,31 +10,40 @@
     <link rel="prefetch" type="application/l10n" href="../l10n/popup.ini" />
   </head>
   <body>
-    <div id="button-div">
-      <div id="top-div">
+    <div id="grid">
+      <div id="row1col1">
         <button id="download-button" data-l10n-id="downloadButton">
           <span class="accesskey" accesskey="d">D</span>ownload
         </button>
+      </div>
+      <div id="row1col2"></div>
+      <div id="row1col3" class="pad-right">
         <button id="open-options-button" data-l10n-id="optionsButton">
           <span class="accesskey" accesskey="o">O</span>ptions
         </button>
       </div>
-      <div>
+      <div id="row2col1" class="center-vertical pad-right">
         <span data-l10n-id="saveSelectedURLsSpan">Save Selected URLs</span>
+      </div>
+      <div id="row2col2">
         <button id="clipboard-button" data-l10n-id="clipboardButton">
           <span class="accesskey" accesskey="c">C</span>lipboard
         </button>
         <button id="file-button" data-l10n-id="fileButton">
           <span class="accesskey" accesskey="f">F</span>ile
         </button>
+        <iframe srcdoc="<a id='save-link' href='' download></a>"></iframe>
       </div>
-      <div>
+      <div id="row2col3"></div>
+      <div id="row3col1" class="center-vertical">
         <label for="select-rows-by-url" data-l10n-id="urlRegexLabel">
           <span class="accesskey" accesskey="u">U</span>RL Regex
         </label>
+      </div>
+      <div id="row3col2">
         <input type="text" id="select-rows-by-url" placeholder="Select files by URL" title="Example: . to select all files." data-l10n-id="selectFilesRegexInput"/>
       </div>
-      <iframe srcdoc="<a id='save-link' href='' download></a>"></iframe>
+      <div id="row3col3"></div>
     </div>
     <div id="table-div">
       <table>
