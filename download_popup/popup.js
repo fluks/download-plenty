@@ -396,23 +396,25 @@ const updateDownloads = (msg) => {
     const bytesElem = data.tr.querySelector('.bytes-text');
     const bytesUnit = goodUnitForBytes(data.bytes);
     const bytesCol = data.tr.querySelector('.bytes-column');
+    const progressRGB = 'rgba(73, 251, 73, ';
 
     if (msg.state === 'in_progress') {
         bytesElem.textContent =
             bytesToHuman(msg.bytesReceived, false, bytesUnit) + '/' +
-                bytesToHuman(data.bytes, true, bytesUnit);
+            bytesToHuman(data.bytes, true, bytesUnit);
         const percentFinished = (msg.bytesReceived / data.bytes) * 100;
         bytesCol.style.background =
-            `linear-gradient(to right, lightgreen ${percentFinished}%, white ${percentFinished}%)`;
+            `linear-gradient(to right, ${progressRGB}0.3) ${percentFinished}%,` +
+            `white ${percentFinished}%)`;
 
         timeLeftElem.textContent = humanTimeDiff(msg.timeLeft);
     }
     else if (msg.state === 'complete') {
         bytesElem.textContent =
             bytesToHuman(data.bytes, false, bytesUnit) + '/' +
-                bytesToHuman(data.bytes, true, bytesUnit);
+            bytesToHuman(data.bytes, true, bytesUnit);
         bytesCol.style.background =
-            `linear-gradient(to right, lightgreen 100%, white 100%)`;
+            `linear-gradient(to right, ${progressRGB}0.7) 100%, white 100%)`;
 
         timeLeftElem.textContent = '';
     }
