@@ -92,18 +92,14 @@ const download = (port) => {
 
 /**
  * Execute content script and open downloads tab.
- * @param tab {tabs.Tab}
+ * @param tab {tabs.Tab} Active tab when browser action was clicked.
  */
 const openDownloadsTab = async (tab) => {
-    // Execute this script always, it returns error when executed second time
-    // on the same page. TODO Put this inside try/catch and find a way to
-    // not execute script more than once, and deal with 'disconnected port'
-    // errors. This seems to work now, but there might be timing issues.
-    browser.tabs.executeScript(tab.id, {
-        file: 'content_scripts/content_script.js',
-    });
-
     try {
+        await browser.tabs.executeScript(tab.id, {
+            file: 'content_scripts/content_script.js',
+        });
+
         const url = 'download_popup/popup.html?' +
             `orig_tab_id=${tab.id}orig_url=${tab.url}`;
         const dlTab = await browser.tabs.create({

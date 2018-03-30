@@ -4,7 +4,13 @@
  * files. Then sends all the information back to the browser action.
  */
 
+(function() {
 'use strict';
+// A hack to prevent executing the content script more than once on the same
+// page. I.e. open downloads page, close it, then open it again on the same
+// page.
+if (alreadyLoaded)
+    return;
 
 /**
  * @param that {}
@@ -73,3 +79,6 @@ const getDownloads = (port) => {
 };
 
 chrome.runtime.onConnect.addListener(getDownloads);
+
+})();
+var alreadyLoaded = true;
