@@ -92,23 +92,26 @@ const download = (port) => {
 
 /**
  * Execute content script and open downloads tab.
- * @param tab {tabs.Tab}
+ * @param tab {tabs.Tab} Active tab when browser action was clicked.
  */
-const openDownloadsTab = (tab) => {
-    chrome.tabs.executeScript(tab.id, {
-        file: 'content_scripts/content_script.js',
-    });
+const openDownloadsTab = async (tab) => {
+    try {
+        await browser.tabs.executeScript(tab.id, {
+            file: 'content_scripts/content_script.js',
+        });
 
-    const url = 'download_popup/popup.html?' +
-        'orig_tab_id=' + tab.id + '&' +
-        'orig_url=' + tab.url;
-    chrome.tabs.create({
-        url: chrome.runtime.getURL(url),
-        index: tab.index + 1,
-    });
+        const url = 'download_popup/popup.html?' +
+            `orig_tab_id=${tab.id}orig_url=${tab.url}`;
+        const dlTab = await browser.tabs.create({
+            url: chrome.runtime.getURL(url),
+            index: tab.index + 1,
+        });
+        browser.browserAction.disable(dlTab.id);
+    } catch(err) {
+        console.error(err);
+    }
 };
 
 chrome.runtime.onInstalled.addListener(setOptions);
 chrome.runtime.onConnect.addListener(download);
-
-chrome.browserAction.onClicked.addListener(openDownloadsTab);
+browser.browserAction.onClicked.addListener(openDownloadsTab);
