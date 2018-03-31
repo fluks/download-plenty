@@ -101,7 +101,7 @@ const openDownloadsTab = async (tab) => {
         });
 
         const url = 'download_popup/popup.html?' +
-            `orig_tab_id=${tab.id}orig_url=${tab.url}`;
+            `orig_tab_id=${tab.id}&orig_url=${tab.url}`;
         const dlTab = await browser.tabs.create({
             url: chrome.runtime.getURL(url),
             index: tab.index + 1,
