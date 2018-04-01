@@ -13,8 +13,8 @@ common_files := \
 	options/* \
 	l10n/* \
 	common/* \
-	LICENSE \
-	README
+	LICENSE* \
+	README.md
 firefox_files := \
 	$(common_files)
 chromium_files := \

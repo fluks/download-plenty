@@ -27,6 +27,17 @@ Doesn't work when NoScript (maybe some other script blockers too) is enabled.
 
 [Download Plenty in AMO](https://addons.mozilla.org/en-US/firefox/addon/download-plenty/)
 
-# License
+# Licenses
 
 GPL3.
+
+## Other Resources
+
+data/logo*svg files by [Elegant Themes](https://www.elegantthemes.com/), licensed as GPL2
+(see https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free).
+
+DOMPurify.js by Mario Heiderich, licensed as Apache License Version 2.0 or Mozilla Public
+License Version 2.0. https://github.com/cure53/DOMPurify
+
+webL10n by Fabien Cazenave, Mozilla, licensed as BSD/MIT/WTFPL.
+https://github.com/fabi1cazenave/webL10n
