@@ -8,3 +8,9 @@ v0.1.0 Mon Mar 26 21:25:16 2018 +0300
     - Save URLs to a file or copy to clipboard
     - Show progress
     - Sort by some columns
+
+v0.2.0 Sun Apr 1 18:54:38 2018 +0300
+
+  * Localize the addon.
+  * Disable toolbar icon on downloads page.
+  * Small UI improvements.
