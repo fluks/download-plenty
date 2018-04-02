@@ -483,7 +483,16 @@ const saveSelectedURLsToFile = (e) => {
     link.click();
 };
 
+/**
+ * Position table corresponding to grid's height.
+ */
+const positionTable = () => {
+    const gridHeight = document.querySelector('#grid').offsetHeight;
+    document.querySelector('#table-div').style.paddingTop = gridHeight + 'px';
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
+document.addEventListener('DOMContentLoaded', positionTable);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
