@@ -27,7 +27,8 @@ web-ext := node_modules/web-ext/bin/web-ext
 firefox-bin := ~/Downloads/firefox-dev/firefox
 ff-profile := dev-edition-default
 
-.PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint doc
+.PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint \
+	doc min_version
 
 run:
 	$(node) $(web-ext) \
@@ -63,3 +64,10 @@ doc:
 
 clean:
 	rm manifest.json
+
+# Set VERBOSITY and BROWSER environment variables, e.g. make min_version
+# VERBOSITY=-vv.
+VERBOSITY :=
+BROWSER := firefox
+min_version:
+	min_ext_ver.pl $(VERBOSITY) -b $(BROWSER) $(js)
