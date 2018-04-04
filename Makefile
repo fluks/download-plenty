@@ -41,11 +41,13 @@ run:
 		-p $(ff-profile) \
 		run
 
+version = $(shell sed -n 's/ *"version": "\(.*\)",/\1/ p' manifest.json)
+
 firefox: change_to_firefox
-	zip -r downloadplenty.xpi $(firefox_files)
+	zip -r downloadplenty_$(version).xpi $(firefox_files)
 
 chromium: change_to_chromium
-	zip downloadplenty.zip $(chromium_files)
+	zip downloadplenty_$(version).zip $(chromium_files)
 
 change_to_firefox:
 	cp firefox/manifest.json .
