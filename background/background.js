@@ -1,10 +1,35 @@
 'use strict';
 
+let
+    /* sync or local for Android. */
+    g_storageArea,
+    g_os;
+
 /**
- * Set default options on install an update.
+ * Find out platform (mainly whether we're on Android or not) and set
+ * g_storageArea and g_os global variables.
+ */
+const getPlatform = async () => {
+    const platform = await browser.runtime.getPlatformInfo();
+    g_os = platform.os;
+    switch (platform.os) {
+        case 'android':
+            g_storageArea = 'local';
+            break;
+        default:
+            g_storageArea = 'sync';
+    }
+};
+
+/**
+ * Set default options on install and update.
  * @param details {Object}
  */
-const setOptions = (details) => {
+const setOptions = async (details) => {
+    const localOptions = {
+        storageArea: g_storageArea,
+        os: g_os,
+    };
     if (details.reason === 'install') {
         const defaultOptions = {
             mimeFilters: {
@@ -19,17 +44,23 @@ const setOptions = (details) => {
                 video: true,
             }
         };
-        chrome.storage.sync.set(defaultOptions);
+        browser.storage[g_storageArea].set(defaultOptions);
+        // New options.
+        browser.storage.local.set(localOptions);
     }
-    // Add new default options here also. For future use.
+    // Add new options here also.
     else if (details.reason === 'update') {
+        browser.storage.local.set(localOptions);
     }
 };
 
 /**
+ * Send progress of downloads to downloads page. Stop this progress sender
+ * when there are no active downloads.
  * @param port {}
- * @param progressInterval {Number}
- * @param startTimeInterval {Date}
+ * @param progressInterval {Number} Progress interval's id.
+ * @param startTimeInterval {Date} Start time of the first download in a
+ * session.
  */
 const sendProgress = (port, progressInterval, startTimeInterval) => {
     chrome.downloads.search({ startedAfter: startTimeInterval },
@@ -62,6 +93,7 @@ const sendProgress = (port, progressInterval, startTimeInterval) => {
 };
 
 /**
+ * Start download and progress of downloads.
  * @param port {}
  */
 const download = (port) => {
@@ -106,12 +138,14 @@ const openDownloadsTab = async (tab) => {
             url: chrome.runtime.getURL(url),
             index: tab.index + 1,
         });
-        browser.browserAction.disable(dlTab.id);
+        if (g_os !== 'android')
+            browser.browserAction.disable(dlTab.id);
     } catch(err) {
         console.error(err);
     }
 };
 
+getPlatform();
 chrome.runtime.onInstalled.addListener(setOptions);
 chrome.runtime.onConnect.addListener(download);
 browser.browserAction.onClicked.addListener(openDownloadsTab);

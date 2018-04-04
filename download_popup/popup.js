@@ -18,6 +18,14 @@ const g_directions = { download: 1, mime: 1, url: 1, bytes: 1, };
 /** */
 const SELECT_DOWNLOAD = 0,
     UNSELECT_DOWNLOAD = 1;
+let g_localOpts;
+
+/**
+ * Get local options (platform info). Sets g_localOpts global variable.
+ */
+const getLocalOptions = async () => {
+    g_localOpts = await browser.storage.local.get(null);
+};
 
 /**
  * @param bytes {Integer}
@@ -317,17 +325,41 @@ const sortTable = (e) => {
 };
 
 /**
+ * Hide options button on Android, otherwise set its click handler.
+ * Also call getLocalOptions to get platform info. TODO Refactor this, place
+ * it somewhere else.
+ */
+const handleOptionsButton = async () => {
+    // Need to be called first.
+    await getLocalOptions();
+
+    const optionsButton = document.querySelector('#open-options-button');
+    if (g_localOpts.os === 'android') {
+        optionsButton.style.visibility = 'hidden';
+    }
+    else {
+        optionsButton.addEventListener('click', () => {
+            chrome.runtime.openOptionsPage();
+        });
+    }
+};
+
+/**
  * Notify content script to grab all the links in the web page and create the
  * downloads table.
  */
 const getDownloads = async () => {
+    // TODO Place this somewehere else. Now it's here only because of order of
+    // execution. Have only one DOMContentLoaded handler?
+    await handleOptionsButton();
+
     const url = new URL(location.href);
     document.querySelector('title').textContent += ' - ' + url.searchParams.get('orig_url');
     const originalTabId = parseInt(url.searchParams.get('orig_tab_id'));
 
     const port = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
     const tbody = document.querySelector('tbody');
-    const options = await browser.storage.sync.get(null);
+    const options = await browser.storage[g_localOpts.storageArea].get('mimeFilters');
     port.onMessage.addListener((msg) => fillDownloads(msg, tbody, options.mimeFilters));
     port.postMessage({ start: true });
 };
@@ -504,6 +536,3 @@ document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
 document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
-document.querySelector('#open-options-button').addEventListener('click', () => {
-    chrome.runtime.openOptionsPage();
-});

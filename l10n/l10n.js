@@ -1000,7 +1000,9 @@ document.webL10n = (function(window, document, undefined) {
 
     // most browsers expose the UI language as `navigator.language'
     // but IE uses `navigator.userLanguage' instead
-    var userLocale =  navigator.language || navigator.userLanguage;
+    // webL10n needs i18n.getUILanguage on Firefox for Android. 
+    var userLocale = chrome.i18n.getUILanguage() || navigator.language ||
+        navigator.userLanguage;
     consoleLog('loading [' + userLocale + '] resources, ' +
         (gAsyncResourceLoading ? 'asynchronously.' : 'synchronously.'));
 
