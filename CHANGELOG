@@ -1,3 +1,7 @@
+v0.3.0 Wed Apr 4 23:16:31 2018 +0300
+
+  * Firefox for Android support.
+
 v0.2.1 Mon Apr 2 21:08:06 2018 +0300
 
   * Fix positioning the controls header and the table.
