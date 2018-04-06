@@ -25,7 +25,7 @@ Doesn't work when NoScript (maybe some other script blockers too) is enabled.
 
 # Install
 
-[Download Plenty in AMO](https://addons.mozilla.org/en-US/firefox/addon/download-plenty/)
+[Download Plenty in AMO](https://addons.mozilla.org/addon/download-plenty/)
 
 # Licenses
 
