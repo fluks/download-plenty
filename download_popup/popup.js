@@ -417,39 +417,43 @@ const humanTimeDiff = (estimatedEndTime) => {
 };
 
 /**
- * @param msg {Object}
+ * Update UI about progress of all the downloads.
+ * @param msg {Object[]} Array of objects of downloads. Keys are url, state,
+ * bytesReceived and timeLeft.
  */
 const updateDownloads = (msg) => {
-    const data = g_tableData.find(dl => dl.url === msg.url);
-    if (!data)
-        return;
+    msg.forEach(dl => {
+        const data = g_tableData.find(d => d.url === dl.url);
+        if (!data)
+            return;
 
-    const timeLeftElem = data.tr.querySelector('.time-left-text');
-    const bytesElem = data.tr.querySelector('.bytes-text');
-    const bytesUnit = goodUnitForBytes(data.bytes);
-    const bytesCol = data.tr.querySelector('.bytes-column');
-    const progressRGB = 'rgba(73, 251, 73, ';
+        const timeLeftElem = data.tr.querySelector('.time-left-text');
+        const bytesElem = data.tr.querySelector('.bytes-text');
+        const bytesUnit = goodUnitForBytes(data.bytes);
+        const bytesCol = data.tr.querySelector('.bytes-column');
+        const progressRGB = 'rgba(73, 251, 73, ';
 
-    if (msg.state === 'in_progress') {
-        bytesElem.textContent =
-            bytesToHuman(msg.bytesReceived, false, bytesUnit) + '/' +
-            bytesToHuman(data.bytes, true, bytesUnit);
-        const percentFinished = (msg.bytesReceived / data.bytes) * 100;
-        bytesCol.style.background =
-            `linear-gradient(to right, ${progressRGB}0.3) ${percentFinished}%,` +
-            `white ${percentFinished}%)`;
+        if (dl.state === 'in_progress') {
+            bytesElem.textContent =
+                bytesToHuman(dl.bytesReceived, false, bytesUnit) + '/' +
+                bytesToHuman(data.bytes, true, bytesUnit);
+            const percentFinished = (dl.bytesReceived / data.bytes) * 100;
+            bytesCol.style.background =
+                `linear-gradient(to right, ${progressRGB}0.3) ${percentFinished}%,` +
+                `white ${percentFinished}%)`;
 
-        timeLeftElem.textContent = humanTimeDiff(msg.timeLeft);
-    }
-    else if (msg.state === 'complete') {
-        bytesElem.textContent =
-            bytesToHuman(data.bytes, false, bytesUnit) + '/' +
-            bytesToHuman(data.bytes, true, bytesUnit);
-        bytesCol.style.background =
-            `linear-gradient(to right, ${progressRGB}0.7) 100%, white 100%)`;
+            timeLeftElem.textContent = humanTimeDiff(dl.timeLeft);
+        }
+        else if (dl.state === 'complete') {
+            bytesElem.textContent =
+                bytesToHuman(data.bytes, false, bytesUnit) + '/' +
+                bytesToHuman(data.bytes, true, bytesUnit);
+            bytesCol.style.background =
+                `linear-gradient(to right, ${progressRGB}0.7) 100%, white 100%)`;
 
-        timeLeftElem.textContent = '';
-    }
+            timeLeftElem.textContent = '';
+        }
+    });
 };
 
 /**
@@ -459,14 +463,13 @@ const startDownload = (e) => {
     const port = chrome.runtime.connect({ name: 'download' });
     port.onMessage.addListener((msg) => updateDownloads(msg));
 
-    g_tableData
+    const urls = g_tableData
         .filter(dl => dl.download)
-        .forEach(dl => {
-            port.postMessage({
-                start: true,
-                url: dl.url,
-            });
-        });
+        .map(dl => dl.url);
+    port.postMessage({
+        start: true,
+        urls: urls,
+    });
 };
 
 /**
