@@ -57,60 +57,97 @@ const setOptions = async (details) => {
 /**
  * Send progress of downloads to downloads page. Stop this progress sender
  * when there are no active downloads.
- * @param port {}
- * @param progressInterval {Number} Progress interval's id.
- * @param startTimeInterval {Date} Start time of the first download in a
+ * @param port {runtime.Port}
+ * @param intervalId {Number} Progress interval's id.
+ * @param startTime {Date} Start time of the first download in a
  * session.
+ * @param ids {String[]} Ids of files which are being downloaded.
  */
-const sendProgress = (port, progressInterval, startTimeInterval) => {
-    chrome.downloads.search({ startedAfter: startTimeInterval },
+const sendProgress = (port, intervalId, startTime, ids) => {
+    chrome.downloads.search({ startedAfter: startTime },
             (downloads) => {
 
-        let inProgressDls = 0;
-        downloads.forEach(dl => {
-            if (dl.state === 'in_progress') {
-                port.postMessage({
-                    state: dl.state,
+        let finishedDls = 0;
+        const progressInfo = [];
+        downloads
+            .filter(dl => ids.includes(dl.id))
+            .forEach(dl => {
+                progressInfo.push({
                     url: dl.url,
+                    state: dl.state,
                     bytesReceived: dl.bytesReceived,
                     timeLeft: dl.estimatedEndTime,
                 });
-                inProgressDls++;
-            }
-            else if (dl.state === 'complete') {
-                port.postMessage({
-                    state: dl.state,
-                    url: dl.url,
-                    bytesReceived: dl.bytesReceived,
-                    timeLeft: dl.estimatedEndTime,
-                });
-            }
+                if (dl.state === 'interrupted' || dl.state === 'complete' ||
+                        // If download fails for some reason, state doesn't
+                        // seem to be 'interrupted', but dl.error is set.
+                         dl.error) {
+                    finishedDls++;
+                }
         });
+        port.postMessage(progressInfo);
 
-        if (!inProgressDls)
-            clearInterval(progressInterval);
+        if (finishedDls >= ids.length) {
+            clearInterval(intervalId);
+            console.log('interval cleared');
+        }
     });
 };
 
 /**
+ * Wait for downloads to start and return ids of the downloads that were
+ * succesfully started.
+ * @param ids {Promise[]} Ids of started downloads (return values of
+ * downloads.download)
+ * @return {Promise[]} Ids of downloads that were succesfully started.
+ */
+const waitForDownloadsToStart = async (ids) => {
+    const startedIds = [];
+    // forEach didn't work!
+    for (let i = 0; i < ids.length; i++) {
+        try {
+            // Wait for each of the download to start.
+            const id = await ids[i];
+            startedIds.push(id);
+        } catch (err) {
+            console.log('error waiting for download to start: ' + err);
+        }
+    }
+
+    return startedIds;
+};
+
+/**
  * Start download and progress of downloads.
- * @param port {}
+ * @param port {runtime.Port}
  */
 const download = (port) => {
     if (port.name !== 'download')
         return;
 
-    let progressInterval = null;
-    port.onMessage.addListener(msg => {
+    port.onMessage.addListener(async (msg) => {
         if (msg.start) {
-            chrome.downloads.download({
-                url: msg.url,
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#Reduced_time_precision
+            // Firefox reduces precision of Date.now to protect against timing
+            // attacks. It can be larger than the current one, but this is the
+            // maximum default.
+            const reducedPrecision = 100;
+            const startTime = Date.now() - reducedPrecision;
+
+            const ids = [];
+            msg.urls.forEach((url) => {
+                const id = browser.downloads.download({ url: url, });
+                ids.push(id);
             });
 
-            if (!progressInterval) {
-                const startTime = Date.now();
-                progressInterval = setInterval(() =>
-                    sendProgress(port, progressInterval, startTime), 250);
+            const startedIds = await waitForDownloadsToStart(ids);
+            if (startedIds.length > 0) {
+                const id = setInterval(() =>
+                    sendProgress(port, id, startTime, startedIds), 250);
+
+                // Clear interval if downloads tab is closed. This is here if
+                // tab is closed while downloads are active to stop messaging.
+                port.onDisconnect.addListener(() => clearInterval(id));
             }
         }
         else if (msg.pause) {
