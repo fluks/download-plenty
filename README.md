@@ -17,7 +17,7 @@ You can limit the files shown by selecting MIME types in the options page.
 
 # Limitations
 
-Doesn't work when NoScript (maybe some other script blockers too) is enabled.
+The addon doesn't work if fetch is not allowed in NoScript.
 
 # Screenshots
 
