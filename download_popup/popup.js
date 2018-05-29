@@ -150,6 +150,23 @@ const sanitizeDownloadRow = () => {
 };
 
 /**
+ * A listener for a download checkbox. Set download property in table data for
+ * changed download and enable download, clipboard and file buttons if any file
+ * is selected to be downloaded or if none is selected, disable these buttons.
+ * @param e {EventTarget}
+ * @param i {Number} Index of the table data that was selected/deselected
+ * for download.
+ */
+const selectDownloadListener = (e, i) => {
+    g_tableData[i].download = !g_tableData[i].download;
+
+    const downloadSelected = g_tableData.some(d => d.download);
+    document.querySelector('#download-button').disabled = !downloadSelected;
+    document.querySelector('#clipboard-button').disabled = !downloadSelected;
+    document.querySelector('#file-button').disabled = !downloadSelected;
+};
+
+/**
  * @param data {Object}
  * @param i {Integer}
  * @return {HTMLElement}
@@ -162,9 +179,7 @@ const createTableRow = (data, i) => {
 
     const dlCheckbox = tr.getElementsByClassName('download-select')[0];
     dlCheckbox.checked = data.download;
-    dlCheckbox.addEventListener('change', (e) => {
-        g_tableData[i].download = !g_tableData[i].download;
-    });
+    dlCheckbox.addEventListener('change', (e) => selectDownloadListener(e, i));
 
     const mime = tr.getElementsByClassName('mime-text')[0];
     mime.textContent = data.mime;
@@ -422,7 +437,10 @@ const humanTimeDiff = (estimatedEndTime) => {
  * bytesReceived and timeLeft.
  */
 const updateDownloads = (msg) => {
-    msg.forEach(dl => {
+    if (!msg.hasOwnProperty('progress'))
+        return;
+
+    msg.progress.forEach(dl => {
         const data = g_tableData.find(d => d.url === dl.url);
         if (!data)
             return;
@@ -462,6 +480,10 @@ const updateDownloads = (msg) => {
 const startDownload = (e) => {
     const port = chrome.runtime.connect({ name: 'download' });
     port.onMessage.addListener((msg) => updateDownloads(msg));
+    port.onMessage.addListener((msg) => {
+        if (msg.hasOwnProperty('downloadsFinished'))
+            document.querySelector('#download-button').disabled = false;
+    });
 
     const urls = g_tableData
         .filter(dl => dl.download)
@@ -470,6 +492,7 @@ const startDownload = (e) => {
         start: true,
         urls: urls,
     });
+    document.querySelector('#download-button').disabled = true;
 };
 
 /**

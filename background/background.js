@@ -85,10 +85,11 @@ const sendProgress = (port, intervalId, startTime, ids) => {
                     finishedDls++;
                 }
         });
-        port.postMessage(progressInfo);
+        port.postMessage({ progress: progressInfo });
 
         if (finishedDls >= ids.length) {
             clearInterval(intervalId);
+            port.postMessage({ downloadsFinished: true });
             console.log('interval cleared');
         }
     });
@@ -148,6 +149,9 @@ const download = (port) => {
                 // Clear interval if downloads tab is closed. This is here if
                 // tab is closed while downloads are active to stop messaging.
                 port.onDisconnect.addListener(() => clearInterval(id));
+            }
+            else {
+                port.postMessage({ downloadsFinished: true });
             }
         }
         else if (msg.pause) {
