@@ -118,15 +118,6 @@ const waitForDownloadsToStart = async (ids) => {
     return startedIds;
 };
 
-const dataURLToObjectURL = (url) => {
-    let base64 = url.replace(/^data:(\w*\/\w*;base64,)?/, '');
-    const data = window.atob(base64);
-    const blob = new Blob([
-        new Uint8Array( data.split('').map(c => c.charCodeAt(0)) ) ]);
-
-    return URL.createObjectURL(blob);
-};
-
 /**
  * Start download and progress of downloads.
  * @param port {runtime.Port}
@@ -147,8 +138,6 @@ const download = async (port) => {
             const ids = [];
             msg.urls.forEach(async (url) => {
                 try {
-                    if (url.startsWith('data:'))
-                        url = dataURLToObjectURL(url); 
                     const id = browser.downloads.download({ url: url, });
                     ids.push(id);
                 } catch (err) {
