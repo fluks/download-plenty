@@ -71,7 +71,7 @@ const getDownloads = (port) => {
                 if (!attr)
                     return;
                 const url = e[attr];
-                if (url)
+                if (url && !url.startsWith('data:'))
                     head(url, port);
             });
         }

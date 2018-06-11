@@ -122,7 +122,7 @@ const waitForDownloadsToStart = async (ids) => {
  * Start download and progress of downloads.
  * @param port {runtime.Port}
  */
-const download = (port) => {
+const download = async (port) => {
     if (port.name !== 'download')
         return;
 
@@ -136,9 +136,13 @@ const download = (port) => {
             const startTime = Date.now() - reducedPrecision;
 
             const ids = [];
-            msg.urls.forEach((url) => {
-                const id = browser.downloads.download({ url: url, });
-                ids.push(id);
+            msg.urls.forEach(async (url) => {
+                try {
+                    const id = browser.downloads.download({ url: url, });
+                    ids.push(id);
+                } catch (err) {
+                    console.log(err);
+                }
             });
 
             const startedIds = await waitForDownloadsToStart(ids);
