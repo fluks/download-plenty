@@ -515,6 +515,12 @@ const copyToClipboard = (e) => {
 const saveSelectedURLsToClipboard = (e) => {
     document.addEventListener('copy', copyToClipboard);
     document.execCommand('copy');
+
+    const clipboardMessage = document.querySelector('#clipboard-message-span');
+    clipboardMessage.style.visibility = 'visible';
+    window.setTimeout(() => {
+        clipboardMessage.style.visibility = 'hidden';
+    }, 1500);
 };
 
 /**

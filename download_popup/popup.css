@@ -111,3 +111,7 @@ iframe {
   display: block;
   cursor: pointer;
 }
+
+#clipboard-message-span {
+    visibility: hidden;
+}
