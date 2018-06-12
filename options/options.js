@@ -51,4 +51,5 @@ const saveSettings = (e) => {
 };
 
 document.addEventListener('DOMContentLoaded', loadSettings);
+document.addEventListener('localized', common_setLangAndDir);
 saveButton.addEventListener('click', saveSettings);

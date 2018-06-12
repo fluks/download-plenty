@@ -557,6 +557,7 @@ const positionTable = () => {
 
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.addEventListener('DOMContentLoaded', positionTable);
+document.addEventListener('localized', common_setLangAndDir);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
