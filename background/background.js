@@ -119,6 +119,30 @@ const waitForDownloadsToStart = async (ids) => {
 };
 
 /**
+ * Get the filename from the URL.
+ * @param url {String} URL of the file to be downloaded.
+ * @return {String} The last part of the filepath of the URL or 'download'.
+ */
+const getFilenameFromURL = (url) => {
+    url = new URL(url);
+    const paths = url.pathname.split('/');
+
+    return paths.pop() || 'download';
+};
+
+/**
+ * Add a counter to the filename before the suffix if the file has one.
+ * The counter is added because, if files have the same file name, downloads
+ * will fail.
+ * @param filename {String} The name of the file to be downloaded.
+ * @param i {Int} Counter to add to the filename.
+ * @return {String} Filename and the counter concatenated.
+ */
+const addCounter = (filename, i) => {
+    return filename.replace(/(\.[^.]*)?$/, `_${i}$1`);
+};
+
+/**
  * Start download and progress of downloads.
  * @param port {runtime.Port}
  */
@@ -136,9 +160,20 @@ const download = async (port) => {
             const startTime = Date.now() - reducedPrecision;
 
             const ids = [];
-            msg.urls.forEach(async (url) => {
+            const files = {};
+            msg.urls.forEach((url, i) => {
                 try {
-                    const id = browser.downloads.download({ url: url, });
+                    const downloadOptions = { url: url, };
+
+                    let file = getFilenameFromURL(url);
+                    if (files.hasOwnProperty(file)) {
+                        file = addCounter(file, files[file]++);
+                        downloadOptions.filename = file;
+                    }
+                    else
+                        files[file] = 1
+
+                    const id = browser.downloads.download(downloadOptions);
                     ids.push(id);
                 } catch (err) {
                     console.log(err);
