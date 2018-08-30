@@ -15,7 +15,8 @@ common_files := \
 	l10n/* \
 	common/* \
 	LICENSE* \
-	README.md
+	README.md \
+	CHANGELOG
 firefox_files := \
 	$(common_files)
 chromium_files := \
