@@ -53,6 +53,10 @@ const head = (url, port) => {
 const map = {
     a: 'href',
     img: 'src',
+    source: 'src',
+    video: 'src',
+    audio: 'src',
+    track: 'src',
 };
 const tags = Object.keys(map);
 const elems = document.querySelectorAll(tags.join(','));
