@@ -1,3 +1,8 @@
+v0.5.0 Sun Sep 30 04:33:56 2018 +0300
+
+  * Make it possible to download files from audio, source, track and video
+    elements.
+
 v0.4.0 Thu Aug 30 22:59:44 2018 +0300
 
   * Enable/disable buttons whether files are selected.
