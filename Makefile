@@ -30,7 +30,7 @@ firefox-bin := ~/Downloads/firefox-dev/firefox
 ff-profile := dev-edition-default
 
 .PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint \
-	doc min_version
+	doc min_version compare_install_and_source
 
 run:
 	$(node) $(web-ext) \
@@ -75,3 +75,18 @@ VERBOSITY :=
 BROWSER := firefox
 min_version:
 	min_ext_ver.pl $(VERBOSITY) -b $(BROWSER) $(js)
+
+# usage: make compare_install_and_source install=PATH1 source=PATH2
+# where PATH1 is path to the installed addon in
+# ~/.mozilla/firefox/PROFILE/extensions/redirectlink@fluks.xpi and PATH2 is
+# path to the generated xpi you can create with make firefox.
+tmp_install := /tmp/_install
+tmp_source := /tmp/_source
+compare_install_and_source:
+	@mkdir $(tmp_install)
+	@unzip -qqd $(tmp_install) $(install)
+	@rm -rf $(tmp_install)/META-INF
+	@mkdir $(tmp_source)
+	@unzip -qqd $(tmp_source) $(source)
+	diff -r $(tmp_install) $(tmp_source)
+	@rm -rf $(tmp_install) $(tmp_source)
