@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "dompurify": "^2.0.7"
+  },
+  "devDependencies": {
+    "web-ext": "latest",
+    "eslint": "latest",
+    "jsdoc": "latest"
+  }
+}
