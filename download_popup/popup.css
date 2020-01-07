@@ -115,3 +115,9 @@ iframe {
 #clipboard-message-span {
     visibility: hidden;
 }
+
+.download-column label {
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+}

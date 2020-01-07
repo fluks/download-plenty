@@ -135,7 +135,7 @@ const sanitizeDownloadRow = () => {
         const downloadRow = DOMPurify.sanitize(
             // Without table and tr tags, tds are discarded.
             '<table><tr>' +
-            '<td class="download-column center"><input class="download-select" type="checkbox"/></td>' +
+            '<td class="download-column center"><label><input class="download-select" type="checkbox"/></label></td>' +
             '<td class="mime-column"><span class="mime-text"></span></td>' +
             '<td class="url-column"><span class="url-text"></span></td>' +
             '<td class="bytes-column"><span class="bytes-text"></span></td>' +
