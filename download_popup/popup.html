@@ -36,7 +36,10 @@
         <iframe srcdoc="<a id='save-link' href='' download></a>"></iframe>
         <span id="clipboard-message-span" data-l10n-id="clipboardMessageSpan">Copied to Clipboard</span>
       </div>
-      <div id="row2col3"></div>
+      <div id="row2col3" class="pad-right center-vertical">
+        <span id="number-files-text-span" data-l10n-id="numberOfFilesSpan">Files: </span>
+        <span id="number-files-span">0</span>
+      </div>
       <div id="row3col1" class="center-vertical">
         <label for="select-rows-by-url" data-l10n-id="urlRegexLabel">
           <span class="accesskey" accesskey="u">U</span>RL Regex
@@ -45,7 +48,10 @@
       <div id="row3col2">
         <input type="text" id="select-rows-by-url" placeholder="Select files by URL" title="Example: . to select all files." data-l10n-id="selectFilesRegexInput"/>
       </div>
-      <div id="row3col3"></div>
+      <div id="row3col3" class="center-vertical pad-right">
+        <span id="total-size-text-span" data-l10n-id="totalSizeSpan">Total Size: </span>
+        <span id="total-size-span">0B</span>
+      </div>
     </div>
     <div id="table-div">
       <table>

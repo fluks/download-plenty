@@ -113,7 +113,11 @@ iframe {
 }
 
 #clipboard-message-span {
-    visibility: hidden;
+  visibility: hidden;
+}
+
+#open-options-button {
+  float: right;
 }
 
 .download-column label {

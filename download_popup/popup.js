@@ -164,6 +164,15 @@ const selectDownloadListener = (e, i) => {
     document.querySelector('#download-button').disabled = !downloadSelected;
     document.querySelector('#clipboard-button').disabled = !downloadSelected;
     document.querySelector('#file-button').disabled = !downloadSelected;
+
+    document.querySelector('#number-files-span').textContent = g_tableData
+        .filter(d => d.download)
+        .reduce((acc) => acc + 1, 0);
+    const bytes = g_tableData
+        .filter(d => d.download && !isNaN(d.bytes))
+        .reduce((acc, val) => acc + val.bytes, 0);
+    document.querySelector('#total-size-span').textContent =
+        bytesToHuman(bytes, true, goodUnitForBytes(bytes));
 };
 
 /**
