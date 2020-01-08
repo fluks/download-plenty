@@ -9,3 +9,9 @@
 #save-notification {
     visibility: hidden;
 }
+
+@media only screen and (hover: none) {
+  #save-button {
+    font-size: 1.3em;
+  }
+}

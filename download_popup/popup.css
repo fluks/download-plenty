@@ -125,3 +125,13 @@ iframe {
   width: 100%;
   display: inline-block;
 }
+
+@media only screen and (hover: none) {
+  #grid button, #grid div > span, #grid label, #grid input {
+    font-size: 1.5em;
+  }
+
+  thead button, tfoot button {
+    font-size: 1.2em;
+  }
+}
