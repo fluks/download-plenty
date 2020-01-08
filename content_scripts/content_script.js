@@ -70,13 +70,16 @@ const getDownloads = (port) => {
 
     port.onMessage.addListener(msg => {
         if (msg.start) {
+            const seenUrls = {};
             elems.forEach(e => {
                 const attr = map[e.nodeName.toLowerCase()];
                 if (!attr)
                     return;
                 const url = e[attr];
-                if (url && !url.startsWith('data:'))
+                if (url && !seenUrls[url] && !url.startsWith('data:')) {
+                    seenUrls[url] = true
                     head(url, port);
+                }
             });
         }
     });
