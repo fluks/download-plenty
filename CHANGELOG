@@ -1,3 +1,10 @@
+v0.6.0 Fri, 10 Jan 2020 23:30:34 +0200
+
+  * Update DOMPurify for security reasons.
+  * Add total number of files and size to be downloaded.
+  * List downloads with the same URL only once.
+  * Small UI changes.
+
 v0.5.0 Sun Sep 30 04:33:56 2018 +0300
 
   * Make it possible to download files from audio, source, track and video
