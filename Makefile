@@ -32,7 +32,8 @@ run:
 	web-ext \
 		-f $(firefox-bin) \
 		--pref intl.locale.requested=en \
-		-u about:debugging \
+		-u 'about:debugging#/runtime/this-firefox' \
+		-u 'about:devtools-toolbox?type=extension&id=downloadplenty%40fluks' \
 		-u about:addons \
 		-u https://www.turnkeyinternet.net/speed-test/ \
 		-u https://eloquentjavascript.net \
