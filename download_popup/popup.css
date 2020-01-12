@@ -28,11 +28,11 @@ tbody > tr:nth-child(even) {
 }
 
 #download-width {
-  width: 10%;
+  width: 8%;
 }
 
 #mime-width {
-  width: 15%;
+  width: 12%;
 }
 
 #url-width {
@@ -40,11 +40,15 @@ tbody > tr:nth-child(even) {
 }
 
 #bytes-width {
-  width: 15%;
+  width: 13%;
 }
 
 #time-left-width {
   width: 10%;
+}
+
+#controls-width {
+  width: 7%;
 }
 
 .url-column {
@@ -62,13 +66,14 @@ tbody > tr:nth-child(even) {
   cursor: pointer;
 }
 
-/* Can't sort by this column. */
-.time-left-header {
-  cursor: initial;
-}
-
 [class*="-header"]:hover {
   background: rgba(182, 182, 182, .3);
+}
+
+/* Can't sort by these columns. */
+.time-left-header, .controls-header, .time-left-header:hover, .controls-header:hover {
+  cursor: initial;
+  background-color: lightgrey;
 }
 
 iframe {
@@ -110,6 +115,7 @@ iframe {
 .mime-text {
   display: block;
   cursor: pointer;
+  word-break: break-word;
 }
 
 #clipboard-message-span {
@@ -134,4 +140,31 @@ iframe {
   thead button, tfoot button {
     font-size: 1.2em;
   }
+}
+
+.play-pause-button, .cancel-button {
+  background-repeat: no-repeat;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+}
+
+.play-pause-button {
+  float: left;
+  margin-left: 5px;
+}
+
+.cancel-button {
+  background-image: url('cancel.svg');
+  float: right;
+  margin-right: 5px;
+}
+
+.play {
+  background-image: url('play.svg');
+}
+
+.pause {
+  background-image: url('pause.svg');
 }

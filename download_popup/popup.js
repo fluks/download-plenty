@@ -140,6 +140,7 @@ const sanitizeDownloadRow = () => {
             '<td class="url-column"><span class="url-text"></span></td>' +
             '<td class="bytes-column"><span class="bytes-text"></span></td>' +
             '<td class="time-left-column"><span class="time-left-text"></span></td>' +
+            '<td class="controls-column"><button type="submit" class="play-pause-button pause"></button><button type="submit" class="cancel-button"></button></td>' +
             // Without table and tr tags, tds are discarded.
             '</tr></table>');
         // Remove table, tbody and tr tags.
@@ -176,6 +177,73 @@ const selectDownloadListener = (e, i) => {
 };
 
 /**
+ * Set download's id as null to signify it's not active.
+ * @function markDownloadAsNotActive
+ * @param tr {HTMLTableRowElement}
+ */
+const markDownloadAsNotActive = (tr) => {
+    tr.setAttribute('data-id', null);
+};
+
+/**
+ * Get the download id from a download row if it has one.
+ * @function getDownloadId
+ * @param tr {HTMLTableRowElement}
+ * @return {Integer|NaN} Download id or NaN if download isn't active.
+ */
+const getDownloadId = (tr) => {
+    return parseInt(tr.getAttribute('data-id'), 10);
+};
+
+/**
+ * @function resumeOrPauseDownload
+ * @param e {MouseEvent}
+ * @param tr {HTMLTableRowElement}
+ */
+const resumeOrPauseDownload = (e, tr) => {
+    const id = getDownloadId(tr);
+    if (!id)
+        return;
+    let newClass = 'pause',
+        command = 'resume';
+    const button = e.target;
+    if (button.classList.contains('pause')) {
+        command = 'pause';
+        newClass = 'play';
+    }
+
+    const msg = { id: id, };
+    msg[command] = true;
+    const port = chrome.runtime.connect({ name: 'download' });
+    port.postMessage(msg);
+    button.classList.remove('play', 'pause');
+    button.classList.add(newClass);
+};
+
+/**
+ * @function cancelDownload
+ * @param tr {HTMLTableRowElement}
+ * @param playPauseButton {HTMLButtonElement}
+ * @param bytes {Integer}
+ * @param toUnit {String}
+ */
+const cancelDownload = (tr, playPauseButton, bytes, toUnit) => {
+    const id = getDownloadId(tr);
+    if (!id)
+        return;
+    const port = chrome.runtime.connect({ name: 'download' });
+    port.postMessage({ cancel: true, id: id, });
+
+    tr.getElementsByClassName('bytes-text')[0].textContent =
+        bytesToHuman(bytes, true, toUnit);
+    tr.getElementsByClassName('bytes-column')[0].style.background = 'unset';
+    tr.getElementsByClassName('time-left-text')[0].textContent = '';
+    playPauseButton.classList.remove('play');
+    playPauseButton.classList.add('pause');
+    markDownloadAsNotActive(tr);
+};
+
+/**
  * @param data {Object}
  * @param i {Integer}
  * @return {HTMLElement}
@@ -203,6 +271,13 @@ const createTableRow = (data, i) => {
     const toUnit = goodUnitForBytes(data.bytes);
     tr.getElementsByClassName('bytes-text')[0].textContent =
         bytesToHuman(data.bytes, true, toUnit);
+
+    const playPauseButton = tr.getElementsByClassName('play-pause-button')[0];
+    playPauseButton.addEventListener('click', (e) => resumeOrPauseDownload(e, tr));
+
+    const cancelButton = tr.getElementsByClassName('cancel-button')[0];
+    cancelButton.addEventListener('click', () =>
+        cancelDownload(tr, playPauseButton, data.bytes, toUnit));
 
     return tr;
 };
@@ -454,6 +529,12 @@ const updateDownloads = (msg) => {
         if (!data)
             return;
 
+        const id = getDownloadId(data.tr);
+        // Download not started or download canceled and started again with different id.
+        // And state is checked because otherwise after cancelling, id will be set to
+        // integer and play-resume button can still be pressed.
+        if ((!id || id !== dl.id) && dl.state !== 'interrupted')
+            data.tr.setAttribute('data-id', dl.id);
         const timeLeftElem = data.tr.querySelector('.time-left-text');
         const bytesElem = data.tr.querySelector('.bytes-text');
         const bytesUnit = goodUnitForBytes(data.bytes);
@@ -479,6 +560,7 @@ const updateDownloads = (msg) => {
                 `linear-gradient(to right, ${progressRGB}0.7) 100%, white 100%)`;
 
             timeLeftElem.textContent = '';
+            markDownloadAsNotActive(data.tr);
         }
     });
 };
