@@ -77,11 +77,13 @@ const sendProgress = (port, intervalId, startTime, ids) => {
                     state: dl.state,
                     bytesReceived: dl.bytesReceived,
                     timeLeft: dl.estimatedEndTime,
+                    id: dl.id,
                 });
-                if (dl.state === 'interrupted' || dl.state === 'complete' ||
+                if (!(dl.paused && dl.canResume) &&
+                        (dl.state === 'interrupted' || dl.state === 'complete' ||
                         // If download fails for some reason, state doesn't
                         // seem to be 'interrupted', but dl.error is set.
-                         dl.error) {
+                         dl.error)) {
                     finishedDls++;
                 }
         });
@@ -194,10 +196,13 @@ const download = async (port) => {
             }
         }
         else if (msg.pause) {
+            browser.downloads.pause(msg.id);
         }
         else if (msg.resume) {
+            browser.downloads.resume(msg.id);
         }
-        else if (msg.stop) {
+        else if (msg.cancel) {
+            browser.downloads.cancel(msg.id);
         }
     });
 };
