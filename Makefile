@@ -22,18 +22,14 @@ firefox_files := \
 chromium_files := \
 	$(common_files)
 
-# My node version is old, this adds Array.includes support.
-node := ~/Downloads/node-v9.4.0-linux-x86/bin/node
-# Needed if you want to pass options for node.
-web-ext := node_modules/web-ext/bin/web-ext
-firefox-bin := ~/Downloads/firefox-dev/firefox
+firefox-bin := ~/Downloads/firefox_dev/firefox
 ff-profile := dev-edition-default
 
 .PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint \
 	doc min_version compare_install_and_source
 
 run:
-	$(node) $(web-ext) \
+	web-ext \
 		-f $(firefox-bin) \
 		--pref intl.locale.requested=en \
 		-u about:debugging \
@@ -61,7 +57,7 @@ lint:
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),json_xs -f json < $(file) 1>/dev/null;)
 	-eslint --env es6 $(js)
-	$(node) $(web-ext) lint -i doc/* node_modules/* common/purify.js l10n/l10n.js
+	web-ext lint -i doc/* node_modules/* common/purify.js l10n/l10n.js
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
