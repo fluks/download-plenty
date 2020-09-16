@@ -1,3 +1,7 @@
+v0.8.0 Wed, 16 Sep 2020 21:53:45 +0300
+
+  * Update DOMPurify
+
 v0.7.0 Sun, 12 Jan 2020 19:30:43 +0200
 
   * Add resume, play and cancel download buttons.
