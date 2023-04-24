@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Download Plenty",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "description": "__MSG_extensionDescription__",
 
     "default_locale": "en",
