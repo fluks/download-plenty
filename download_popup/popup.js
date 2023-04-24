@@ -306,12 +306,12 @@ let g_dataRowIndex = 0;
  * @param mimeFilters {Object} MIME types which should be shown.
  */
 const fillDownloads = (msg, tbody, mimeFilters) => {
-    if (msg.status === 200 && !isMimeFiltered(msg.mime, mimeFilters)) {
+    if (!isMimeFiltered(msg.mime, mimeFilters)) {
         const dataRow = {
             download: false,
             mime: msg.mime ? msg.mime.split(';', 1)[0] : UNKNOWN,
             url: msg.url,
-            bytes: parseInt(msg.bytes),
+            bytes: msg.bytes ? parseInt(msg.bytes) : 0,
         };
         g_tableData.push(dataRow);
 

@@ -29,8 +29,14 @@ const onLoad = (that, url, port) => {
  * @param that {}
  * @param url {String}
  */
-const onError = (that, url) => {
+const onError = (that, url, port) => {
     console.log(`status: ${that.status}\nurl: ${url}`);
+    port.postMessage({
+        url: url,
+        status: that.status,
+        bytes: that.getResponseHeader('Content-Length') || 0,
+        mime: that.getResponseHeader('Content-Type') || '?',
+    });
 };
 
 /**
@@ -43,7 +49,7 @@ const head = (url, port) => {
         onLoad(this, url, port);
     });
     req.addEventListener('error', function() {
-        onError(this, url);
+        onError(this, url, port);
     });
     req.open('HEAD', url);
     req.send();
