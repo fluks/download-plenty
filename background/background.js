@@ -212,6 +212,9 @@ const download = async (port) => {
  * @param tab {tabs.Tab} Active tab when browser action was clicked.
  */
 const openDownloadsTab = async (tab) => {
+    if (tab.url.match(/^moz-extension:\/\/.+\/download_popup\/popup\.html\?/))
+        return;
+
     try {
         await browser.tabs.executeScript(tab.id, {
             file: 'content_scripts/content_script.js',
