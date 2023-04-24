@@ -165,7 +165,7 @@ const download = async (port) => {
             const files = {};
             msg.urls.forEach((url, i) => {
                 try {
-                    const downloadOptions = { url: url, };
+                    const downloadOptions = { url: url, allowHttpErrors: true, };
 
                     let file = getFilenameFromURL(url);
                     if (files.hasOwnProperty(file)) {
