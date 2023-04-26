@@ -1,3 +1,9 @@
+v0.11.0 Wed, 26 Apr 2023 14:20:55 +0300
+
+  * Make popup's columns resizable.
+  * Remove save options button and add clear column sizes button.
+  * Open options in a tab.
+
 v0.10.0 Mon, 24 Apr 2023 12:54:23 +0300
 
   * Try to download in any case and other small changes.
