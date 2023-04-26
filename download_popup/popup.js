@@ -638,6 +638,60 @@ const positionTable = () => {
     document.querySelector('#table-div').style.paddingTop = gridHeight + 'px';
 };
 
+/** Resize columns of the table. Found from https://jsfiddle.net/thrilleratplay/epcybL4v/.
+ */
+const resizeColumns = () => {
+    let thElm, startOffset;
+
+    const ths = document.querySelectorAll("thead tr th");
+    Array.prototype.forEach.call(ths, (th) => {
+        th.style.position = 'relative';
+
+        var grip = document.createElement('div');
+        grip.innerHTML = "&nbsp;";
+        grip.style.top = 0;
+        grip.style.right = 0;
+        grip.style.bottom = 0;
+        grip.style.width = '5px';
+        grip.style.position = 'absolute';
+        grip.style.cursor = 'col-resize';
+        grip.addEventListener('mousedown', (e) => {
+            thElm = th;
+            startOffset = th.offsetWidth - e.pageX;
+        });
+
+        th.appendChild(grip);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (thElm) {
+            thElm.style.width = startOffset + e.pageX + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        thElm = undefined;
+
+        const columnSizes = {};
+        ths.forEach(e => {
+            columnSizes[e.getAttribute('id')] = e.offsetWidth;
+        });
+        chrome.storage[Common.localOpts.storageArea].set({ columnSizes: columnSizes });
+    });
+};
+
+/**
+ */
+const setColumnSizes = async () => {
+    await Common.getLocalOptions();
+    const options = await browser.storage[Common.localOpts.storageArea].get('columnSizes');
+    if (options.columnSizes) {
+        for (const [id, size] of Object.entries(options.columnSizes)) {
+            document.querySelector(`#${id}`).style.width = `${size}px`;
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.addEventListener('DOMContentLoaded', positionTable);
 document.addEventListener('localized', Common.setLangAndDir);
@@ -652,3 +706,5 @@ document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
 document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
+document.addEventListener('DOMContentLoaded', resizeColumns);
+document.addEventListener('DOMContentLoaded', setColumnSizes);

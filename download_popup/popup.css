@@ -28,30 +28,6 @@ tbody > tr:nth-child(even) {
   background: rgba(182, 182, 182, .3);
 }
 
-#download-width {
-  width: 8%;
-}
-
-#mime-width {
-  width: 12%;
-}
-
-#url-width {
-  width: 50%;
-}
-
-#bytes-width {
-  width: 13%;
-}
-
-#time-left-width {
-  width: 10%;
-}
-
-#controls-width {
-  width: 7%;
-}
-
 .url-column {
   text-overflow: ellipsis;
   overflow: hidden;
