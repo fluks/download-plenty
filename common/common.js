@@ -1,9 +1,18 @@
 'use strict';
 
-/**
- * Set html tag's lang and dir attributes corresponding to current language.
- */
-const common_setLangAndDir = () => {
-    document.documentElement.setAttribute('lang', document.webL10n.getLanguage());
-    document.documentElement.setAttribute('dir', document.webL10n.getDirection());
-};
+class Common {
+    static localOpts;
+
+    /*** Get local options (platform info).
+     */
+    static async getLocalOptions() {
+        this.localOpts = await browser.storage.local.get(null);
+    }
+
+    /** Set html tag's lang and dir attributes corresponding to current language.
+     */
+    static setLangAndDir() {
+        document.documentElement.setAttribute('lang', document.webL10n.getLanguage());
+        document.documentElement.setAttribute('dir', document.webL10n.getDirection());
+    }
+}

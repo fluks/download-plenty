@@ -18,14 +18,6 @@ const g_directions = { download: 1, mime: 1, url: 1, bytes: 1, };
 /** */
 const SELECT_DOWNLOAD = 0,
     UNSELECT_DOWNLOAD = 1;
-let g_localOpts;
-
-/**
- * Get local options (platform info). Sets g_localOpts global variable.
- */
-const getLocalOptions = async () => {
-    g_localOpts = await browser.storage.local.get(null);
-};
 
 /**
  * @param bytes {Integer}
@@ -430,10 +422,10 @@ const sortTable = (e) => {
  */
 const handleOptionsButton = async () => {
     // Need to be called first.
-    await getLocalOptions();
+    await Common.getLocalOptions();
 
     const optionsButton = document.querySelector('#open-options-button');
-    if (g_localOpts.os === 'android') {
+    if (Common.localOpts.os === 'android') {
         optionsButton.style.visibility = 'hidden';
     }
     else {
@@ -458,7 +450,7 @@ const getDownloads = async () => {
 
     const port = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
     const tbody = document.querySelector('tbody');
-    const options = await browser.storage[g_localOpts.storageArea].get('mimeFilters');
+    const options = await browser.storage[Common.localOpts.storageArea].get('mimeFilters');
     port.onMessage.addListener((msg) => fillDownloads(msg, tbody, options.mimeFilters));
     port.postMessage({ start: true });
 };
@@ -648,7 +640,7 @@ const positionTable = () => {
 
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.addEventListener('DOMContentLoaded', positionTable);
-document.addEventListener('localized', common_setLangAndDir);
+document.addEventListener('localized', Common.setLangAndDir);
 document.querySelectorAll('button[class*="-header"]').forEach(el => {
     addEventListener('click', sortTable);
 });
