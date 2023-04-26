@@ -1,17 +1,7 @@
-* {
-  margin: 1px;
+body {
+  margin: 15px;
 }
 
-#save-button {
-  margin: 10px 0 5px 0;
-}
-
-#save-notification {
-    visibility: hidden;
-}
-
-@media only screen and (hover: none) {
-  #save-button {
-    font-size: 1.3em;
-  }
+div {
+  margin-bottom: 15px;
 }

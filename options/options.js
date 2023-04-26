@@ -1,9 +1,6 @@
 'use strict';
 
-const
-    saveButton = document.querySelector('#save-button'),
-    saveNotification = document.querySelector('#save-notification'),
-    mimeFilters = document.querySelectorAll('#mime-types > option');
+const mimeFilters = document.querySelectorAll('#mime-types > option');
 
 /**
  * Load settings.
@@ -23,12 +20,8 @@ const loadSettings = async (e) => {
 };
 
 /**
- * Save settings.
- * @param e {EventTarget}
  */
-const saveSettings = (e) => {
-    e.preventDefault();
-
+const saveSettings = () => {
     const options = { mimeFilters: {} };
     mimeFilters.forEach(option => {
         options.mimeFilters[option.value] = option.selected;
@@ -37,12 +30,13 @@ const saveSettings = (e) => {
     chrome.storage[Common.localOpts.storageArea].set(options);
 };
 
-    saveNotification.style.visibility = 'visible';
-    setTimeout(() => {
-        saveNotification.style.visibility = 'hidden';
-    }, 2000);
+/**
+ */
+const clearColumnSizes = () => {
+    browser.storage[Common.localOpts.storageArea].remove('columnSizes');
 };
 
 document.addEventListener('DOMContentLoaded', loadSettings);
-saveButton.addEventListener('click', saveSettings);
 document.addEventListener('localized', Common.setLangAndDir);
+document.querySelector('#default-column-sizes-button').addEventListener('click', clearColumnSizes);
+window.addEventListener('blur', saveSettings);

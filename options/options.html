@@ -10,27 +10,29 @@
   </head>
   <body>
     <form>
-      <label id="mime-label" for="mime-types" data-l10n-id="mimeLabel">
-        <span class="accesskey" accesskey="f">F</span>ilter MIME Types
-      </label>
-      <select id="mime-types" multiple>
-        <option value="application">application</option>
-        <option value="audio">audio</option>
-        <option value="font">font</option>
-        <option value="image">image</option>
-        <option value="message">message</option>
-        <option value="model">model</option>
-        <option value="multipart">multipart</option>
-        <option value="text">text</option>
-        <option value="video">video</option>
-      </select>
       <div>
-        <button id="save-button" data-l10n-id="saveButton">
-          <span class="accesskey" accesskey="s">S</span>ave
-        </button>
+        <label id="mime-label" for="mime-types" data-l10n-id="mimeLabel">
+          <span class="accesskey" accesskey="f">F</span>ilter MIME Types
+        </label>
+        <select id="mime-types" multiple>
+          <option value="application">application</option>
+          <option value="audio">audio</option>
+          <option value="font">font</option>
+          <option value="image">image</option>
+          <option value="message">message</option>
+          <option value="model">model</option>
+          <option value="multipart">multipart</option>
+          <option value="text">text</option>
+          <option value="video">video</option>
+        </select>
       </div>
       <div>
-        <span id="save-notification" data-l10n-id="saveNotification">Settings Saved</span>
+        <label id="default-column-sizes-label" for="default-column-sizes-button" data-l10n-id="defaultColumnSizesLabel">
+          Default <span class="accesskey" accesskey="c">C</span>olumn Sizes
+        </label>
+        <button id="default-column-sizes-button" data-l10n-id="defaultColumnSizesButton">
+          Clear
+        </button>
       </div>
     </form>
     <script src="options.js"></script>
