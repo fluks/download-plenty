@@ -7,12 +7,11 @@
     "default_locale": "en",
 
     "icons": {
-        "16": "data/logo_16x16.svg",
-        "48": "data/logo_48x48.svg",
-        "96": "data/logo_96x96.svg",
-        "128": "data/logo_128x128.svg"
+        "16": "data/logo_16x16.png",
+        "48": "data/logo_48x48.png",
+        "96": "data/logo_96x96.png",
+        "128": "data/logo_128x128.png"
     },
-
 
     "background": {
         "page": "background/background.html"
@@ -20,7 +19,7 @@
 
     "browser_action": {
         "browser_style": true,
-        "default_icon": "data/logo.svg",
+        "default_icon": "data/logo.png",
         "default_title": "Download Plenty"
     },
 
