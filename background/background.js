@@ -59,12 +59,12 @@ const setOptions = async (details) => {
  * when there are no active downloads.
  * @param port {runtime.Port}
  * @param intervalId {Number} Progress interval's id.
- * @param startTime {Date} Start time of the first download in a
+ * @param startTime {Number} Start time of the first download in a
  * session.
  * @param ids {String[]} Ids of files which are being downloaded.
  */
 const sendProgress = (port, intervalId, startTime, ids) => {
-    chrome.downloads.search({ startedAfter: startTime },
+    chrome.downloads.search({ startedAfter: new Date(startTime).toISOString(), },
             (downloads) => {
 
         let finishedDls = 0;
@@ -165,7 +165,7 @@ const download = async (port) => {
             const files = {};
             msg.urls.forEach((url, i) => {
                 try {
-                    const downloadOptions = { url: url, allowHttpErrors: true, };
+                    const downloadOptions = { url: url, };
 
                     let file = getFilenameFromURL(url);
                     if (files.hasOwnProperty(file)) {
