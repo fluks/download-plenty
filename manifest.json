@@ -13,14 +13,9 @@
         "128": "data/logo_128x128.svg"
     },
 
-    "applications": {
-        "gecko": {
-            "id": "downloadplenty@fluks"
-        }
-    },
 
     "background": {
-        "scripts": [ "background/background.js" ]
+        "page": "background/background.html"
     },
 
     "browser_action": {
