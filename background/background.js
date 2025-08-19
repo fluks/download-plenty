@@ -1,5 +1,7 @@
 'use strict';
 
+importScripts('/common/browser-polyfill.js');
+
 let
     /* sync or local for Android. */
     g_storageArea,
@@ -212,12 +214,13 @@ const download = async (port) => {
  * @param tab {tabs.Tab} Active tab when browser action was clicked.
  */
 const openDownloadsTab = async (tab) => {
-    if (tab.url.match(/^moz-extension:\/\/.+\/download_popup\/popup\.html\?/))
+    if (tab.url.match(/^chrome-extension:\/\/.+\/download_popup\/popup\.html\?/))
         return;
 
     try {
-        await browser.tabs.executeScript(tab.id, {
-            file: 'content_scripts/content_script.js',
+        await browser.scripting.executeScript({
+            target: { tabId: tab.id, },
+            files: [ 'content_scripts/content_script.js', ],
         });
 
         const url = 'download_popup/popup.html?' +
@@ -227,13 +230,16 @@ const openDownloadsTab = async (tab) => {
             index: tab.index + 1,
         });
         if (g_os !== 'android')
-            browser.browserAction.disable(dlTab.id);
+            browser.action.disable(dlTab.id);
     } catch(err) {
         console.error(err);
     }
 };
 
-getPlatform();
-chrome.runtime.onInstalled.addListener(setOptions);
+(async function() {
+    // Needs to run before setOptions.
+    await getPlatform();
+    chrome.runtime.onInstalled.addListener(setOptions);
+})();
 chrome.runtime.onConnect.addListener(download);
-browser.browserAction.onClicked.addListener(openDownloadsTab);
+browser.action.onClicked.addListener(openDownloadsTab);
