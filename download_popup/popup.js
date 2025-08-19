@@ -298,7 +298,7 @@ let g_dataRowIndex = 0;
  * @param mimeFilters {Object} MIME types which should be shown.
  */
 const fillDownloads = (msg, tbody, mimeFilters) => {
-    if (!isMimeFiltered(msg.mime, mimeFilters)) {
+    if (!msg.mime || !isMimeFiltered(msg.mime, mimeFilters)) {
         const dataRow = {
             download: false,
             mime: msg.mime ? msg.mime.split(';', 1)[0] : UNKNOWN,
