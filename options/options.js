@@ -1,9 +1,9 @@
 'use strict';
 
-const mimeFilters = document.querySelectorAll('#mime-types > option');
+const g_mimeFilters = document.querySelectorAll('#mime-types > option');
 
 /**
- * Load settings.
+ * @async
  * @param e {EventTarget}
  */
 const loadSettings = async (e) => {
@@ -14,23 +14,24 @@ const loadSettings = async (e) => {
     if (!options)
         return;
 
-    mimeFilters.forEach(option => {
-        option.selected = options.mimeFilters[option.value];
+    g_mimeFilters.forEach(option => {
+        option.selected = options.g_mimeFilters[option.value];
     });
 };
 
 /**
  */
 const saveSettings = () => {
-    const options = { mimeFilters: {} };
-    mimeFilters.forEach(option => {
-        options.mimeFilters[option.value] = option.selected;
+    const options = { g_mimeFilters: {} };
+    g_mimeFilters.forEach(option => {
+        options.g_mimeFilters[option.value] = option.selected;
     });
 
     chrome.storage[Common.localOpts.storageArea].set(options);
 };
 
 /**
+ * Set column sizes back to default.
  */
 const clearColumnSizes = () => {
     browser.storage[Common.localOpts.storageArea].remove('columnSizes');

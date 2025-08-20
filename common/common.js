@@ -4,6 +4,7 @@ class Common {
     static localOpts;
 
     /*** Get local options (platform info).
+     * @async
      */
     static async getLocalOptions() {
         this.localOpts = await browser.storage.local.get(null);

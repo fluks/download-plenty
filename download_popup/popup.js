@@ -419,6 +419,7 @@ const sortTable = (e) => {
  * Hide options button on Android, otherwise set its click handler.
  * Also call getLocalOptions to get platform info. TODO Refactor this, place
  * it somewhere else.
+ * @async
  */
 const handleOptionsButton = async () => {
     // Need to be called first.
@@ -438,6 +439,7 @@ const handleOptionsButton = async () => {
 /**
  * Notify content script to grab all the links in the web page and create the
  * downloads table.
+ * @async
  */
 const getDownloads = async () => {
     // TODO Place this somewehere else. Now it's here only because of order of
@@ -448,11 +450,19 @@ const getDownloads = async () => {
     document.querySelector('title').textContent += ' - ' + url.searchParams.get('orig_url');
     const originalTabId = parseInt(url.searchParams.get('orig_tab_id'));
 
-    const port = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
+    const tabPort = browser.tabs.connect(originalTabId, { name: 'getDownloads' });
     const tbody = document.querySelector('tbody');
     const options = await browser.storage[Common.localOpts.storageArea].get('mimeFilters');
-    port.onMessage.addListener((msg) => fillDownloads(msg, tbody, options.mimeFilters));
-    port.postMessage({ start: true });
+    chrome.runtime.onConnect.addListener(port => {
+        if (port.name !== 'sendHeaders')
+            return;
+
+        port.onMessage.addListener(msg => {
+            fillDownloads(msg, tbody, options.mimeFilters);
+        });
+    });
+
+    tabPort.postMessage({ start: true });
 };
 
 /**
@@ -681,6 +691,7 @@ const resizeColumns = () => {
 };
 
 /**
+ * @async
  */
 const setColumnSizes = async () => {
     await Common.getLocalOptions();

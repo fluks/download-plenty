@@ -10,6 +10,7 @@ let
 /**
  * Find out platform (mainly whether we're on Android or not) and set
  * g_storageArea and g_os global variables.
+ * @async
  */
 const getPlatform = async () => {
     const platform = await browser.runtime.getPlatformInfo();
@@ -26,6 +27,7 @@ const getPlatform = async () => {
 /**
  * Set default options on install and update.
  * @param details {Object}
+ * @async
  */
 const setOptions = async (details) => {
     const localOptions = {
@@ -102,6 +104,7 @@ const sendProgress = (port, intervalId, startTime, ids) => {
 /**
  * Wait for downloads to start and return ids of the downloads that were
  * succesfully started.
+ * @async
  * @param ids {Promise[]} Ids of started downloads (return values of
  * downloads.download)
  * @return {Promise[]} Ids of downloads that were succesfully started.
@@ -148,6 +151,7 @@ const addCounter = (filename, i) => {
 
 /**
  * Start download and progress of downloads.
+ * @async
  * @param port {runtime.Port}
  */
 const download = async (port) => {
@@ -211,6 +215,7 @@ const download = async (port) => {
 
 /**
  * Execute content script and open downloads tab.
+ * @async
  * @param tab {tabs.Tab} Active tab when browser action was clicked.
  */
 const openDownloadsTab = async (tab) => {
@@ -236,10 +241,49 @@ const openDownloadsTab = async (tab) => {
     }
 };
 
+/** Send HEAD HTTP queries to links to get filesize and mime type and send them
+ * to download_popup.js.
+ * @async
+ * @param url {String}
+ * @param port {Port} Port to send messages to download_popup.js.
+ */
+const request = async (url, port) => {
+    try {
+        const response = await fetch(url, { method: 'HEAD', });
+        const result = {
+            url: url,
+            status: response.status,
+            bytes: response.headers.get('content-length') || 0,
+            mime: response.headers.get('content-type') || '?',
+        };
+       port.postMessage(result);
+    }
+    catch (err) {
+        console.error(err);
+    }
+};
+
+/** Listen for connect from content_script.js to get headers from downloadable links
+ * and sent those to download_popup.js.
+ * @param port {Port}
+ */
+const getHeaders = (port) => {
+    if (port.name !== 'getHeaders')
+        return;
+
+    const popupPort = chrome.runtime.connect({ name: 'sendHeaders', });
+    port.onMessage.addListener((msg) => {
+        if (msg.url) {
+            request(msg.url, popupPort);
+        }
+    });
+};
+
 (async function() {
     // Needs to run before setOptions.
     await getPlatform();
     chrome.runtime.onInstalled.addListener(setOptions);
 })();
+chrome.runtime.onConnect.addListener(getHeaders);
 chrome.runtime.onConnect.addListener(download);
 browser.action.onClicked.addListener(openDownloadsTab);

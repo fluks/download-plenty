@@ -12,51 +12,8 @@
 if (alreadyLoaded)
     return;
 
-/**
- * @param that {}
- * @param url {String}
- */
-const onLoad = (that, url, port) => {
-    port.postMessage({
-        url: url,
-        status: that.status,
-        bytes: that.getResponseHeader('Content-Length'),
-        mime: that.getResponseHeader('Content-Type'),
-    });
-};
-
-/**
- * @param that {}
- * @param url {String}
- */
-const onError = (that, url, port) => {
-    console.log(`status: ${that.status}\nurl: ${url}`);
-    port.postMessage({
-        url: url,
-        status: that.status,
-        bytes: that.getResponseHeader('Content-Length') || 0,
-        mime: that.getResponseHeader('Content-Type') || '?',
-    });
-};
-
-/**
- * @param url {String}
- * @param port {}
- */
-const head = (url, port) => {
-    const req = new XMLHttpRequest();
-    req.addEventListener('load', function() {
-        onLoad(this, url, port);
-    });
-    req.addEventListener('error', function() {
-        onError(this, url, port);
-    });
-    req.open('HEAD', url);
-    req.send();
-};
-
 // Get all the downloadable elements immediately.
-const map = {
+const g_map = {
     a: 'href',
     img: 'src',
     source: 'src',
@@ -64,8 +21,8 @@ const map = {
     audio: 'src',
     track: 'src',
 };
-const tags = Object.keys(map);
-const elems = document.querySelectorAll(tags.join(','));
+const g_tags = Object.keys(g_map);
+const g_elems = document.querySelectorAll(g_tags.join(','));
 
 /**
  * @param port {}
@@ -74,17 +31,18 @@ const getDownloads = (port) => {
     if (port.name !== 'getDownloads')
         return;
 
+    const bgPort = chrome.runtime.connect({ name: 'getHeaders', });
     port.onMessage.addListener(msg => {
         if (msg.start) {
             const seenUrls = {};
-            elems.forEach(e => {
-                const attr = map[e.nodeName.toLowerCase()];
+            g_elems.forEach(e => {
+                const attr = g_map[e.nodeName.toLowerCase()];
                 if (!attr)
                     return;
                 const url = e[attr];
                 if (url && !seenUrls[url] && !url.startsWith('data:')) {
                     seenUrls[url] = true
-                    head(url, port);
+                    bgPort.postMessage({ url: url, });
                 }
             });
         }
