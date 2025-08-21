@@ -1,26 +1,20 @@
 'use strict';
 
 importScripts('/common/browser-polyfill.js');
+importScripts('/common/common.js');
 
-let
-    /* sync or local for Android. */
-    g_storageArea,
-    g_os;
-
-/**
- * Find out platform (mainly whether we're on Android or not) and set
- * g_storageArea and g_os global variables.
+/** Find out platform (mainly whether we're on Android or not).
  * @async
+ * @return [Object] Operating system and local or sync storageArea.
+ * TODO Use local storage area always?
  */
 const getPlatform = async () => {
     const platform = await browser.runtime.getPlatformInfo();
-    g_os = platform.os;
     switch (platform.os) {
         case 'android':
-            g_storageArea = 'local';
-            break;
+            return { os: platform.os, storageArea: 'local', };
         default:
-            g_storageArea = 'sync';
+            return { os: platform.os, storageArea: 'sync', };
     }
 };
 
@@ -30,10 +24,9 @@ const getPlatform = async () => {
  * @async
  */
 const setOptions = async (details) => {
-    const localOptions = {
-        storageArea: g_storageArea,
-        os: g_os,
-    };
+    const localOptions = await getPlatform();
+    browser.storage.local.set(localOptions);
+
     if (details.reason === 'install') {
         const defaultOptions = {
             mimeFilters: {
@@ -48,13 +41,11 @@ const setOptions = async (details) => {
                 video: true,
             }
         };
-        browser.storage[g_storageArea].set(defaultOptions);
+        browser.storage[localOptions.storageArea].set(defaultOptions);
         // New options.
-        browser.storage.local.set(localOptions);
     }
     // Add new options here also.
     else if (details.reason === 'update') {
-        browser.storage.local.set(localOptions);
     }
 };
 
@@ -158,6 +149,7 @@ const download = async (port) => {
     if (port.name !== 'download')
         return;
 
+    // TODO
     port.onMessage.addListener(async (msg) => {
         if (msg.start) {
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#Reduced_time_precision
@@ -195,6 +187,7 @@ const download = async (port) => {
 
                 // Clear interval if downloads tab is closed. This is here if
                 // tab is closed while downloads are active to stop messaging.
+                // TODO
                 port.onDisconnect.addListener(() => clearInterval(id));
             }
             else {
@@ -234,7 +227,8 @@ const openDownloadsTab = async (tab) => {
             url: chrome.runtime.getURL(url),
             index: tab.index + 1,
         });
-        if (g_os !== 'android')
+        await Common.getLocalOptions();
+        if (Common.localOpts.os !== 'android')
             browser.action.disable(dlTab.id);
     } catch(err) {
         console.error(err);
@@ -272,6 +266,7 @@ const getHeaders = (port) => {
         return;
 
     const popupPort = chrome.runtime.connect({ name: 'sendHeaders', });
+    // TODO
     port.onMessage.addListener((msg) => {
         if (msg.url) {
             request(msg.url, popupPort);
