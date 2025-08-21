@@ -14,20 +14,20 @@ const loadSettings = async (e) => {
     if (!options)
         return;
 
-    g_mimeFilters.forEach(option => {
-        option.selected = options.g_mimeFilters[option.value];
+    g_mimeFilters.forEach(o => {
+        o.selected = options.mimeFilters[o.value];
     });
 };
 
 /**
  */
 const saveSettings = () => {
-    const options = { g_mimeFilters: {} };
-    g_mimeFilters.forEach(option => {
-        options.g_mimeFilters[option.value] = option.selected;
+    const mimeFilters = {};
+    g_mimeFilters.forEach(o => {
+       mimeFilters[o.value] = o.selected;
     });
 
-    chrome.storage[Common.localOpts.storageArea].set(options);
+    chrome.storage[Common.localOpts.storageArea].set({ mimeFilters: mimeFilters, });
 };
 
 /**
