@@ -18,7 +18,6 @@
     },
 
     "action": {
-        "browser_style": true,
         "default_icon": "data/logo.png",
         "default_title": "Download Plenty"
     },
