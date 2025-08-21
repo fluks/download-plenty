@@ -274,11 +274,7 @@ const getHeaders = (port) => {
     });
 };
 
-(async function() {
-    // Needs to run before setOptions.
-    await getPlatform();
-    chrome.runtime.onInstalled.addListener(setOptions);
-})();
+chrome.runtime.onInstalled.addListener(setOptions);
 chrome.runtime.onConnect.addListener(getHeaders);
 chrome.runtime.onConnect.addListener(download);
 browser.action.onClicked.addListener(openDownloadsTab);
