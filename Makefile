@@ -9,7 +9,6 @@ common_files := \
 	$(locale_files) \
 	$(js) \
 	manifest.json \
-	data/* \
 	download_popup/* \
 	options/* \
 	l10n/* \
@@ -18,15 +17,16 @@ common_files := \
 	README.md \
 	CHANGELOG
 firefox_files := \
-	$(common_files)
+	$(common_files) \
+	data/*.svg
 chromium_files := \
-	$(common_files)
+	$(common_files) \
+	 data/*.png
 
 firefox-bin := ~/Downloads/firefox_dev/firefox
 ff-profile := dev-edition-default
 
-.PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint \
-	doc min_version compare_install_and_source
+.PHONY: run firefox chromium clean lint doc min_version compare_install_and_source
 
 run:
 	web-ext \
@@ -42,23 +42,17 @@ run:
 
 version = $(shell sed -n 's/ *"version": "\(.*\)",/\1/ p' manifest.json)
 
-firefox: change_to_firefox
+firefox:
 	zip -r downloadplenty_$(version).xpi $(firefox_files)
 
-chromium: change_to_chromium
+chromium:
 	zip downloadplenty_$(version).zip $(chromium_files)
-
-change_to_firefox:
-	cp firefox/manifest.json .
-
-change_to_chromium:
-	cp chromium/manifest.json .
 
 lint:
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),json_xs -f json < $(file) 1>/dev/null;)
 	-eslint --env es6 $(js)
-	web-ext lint -i doc/* node_modules/* common/purify.js l10n/l10n.js
+	web-ext lint -i doc/* node_modules/* common/purify.js common/browser-polyfill.js l10n/l10n.js
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
