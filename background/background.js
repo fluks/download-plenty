@@ -243,17 +243,30 @@ const openDownloadsTab = async (tab) => {
  */
 const request = async (url, port) => {
     try {
-        const response = await fetch(url, { method: 'HEAD', });
         const result = {
             url: url,
-            status: response.status,
-            bytes: response.headers.get('content-length') || 0,
-            mime: response.headers.get('content-type') || '?',
+            // TODO Is this used anywhere?
+            status: 0,
+            bytes: 0,
+            mime: '?',
         };
-       port.postMessage(result);
+
+        const response = await fetch(url, { method: 'HEAD', });
+        if (!response.ok) {
+            console.log(`Response status: ${response.status}, at ${url}`);
+            port.postMessage(result);
+            return;
+        }
+
+        result.status = response.status;
+        result.bytes = response.headers.get('content-length') || 0;
+        result.mime = response.headers.get('content-type') || '?';
+
+        port.postMessage(result);
     }
+    // Usually error that the resource can't be downloaded, i.e. ipv6 but only ipv4 is supported.
     catch (err) {
-        console.error(err);
+        console.error(`Error fetching: ${err}, at ${url}`);
     }
 };
 
