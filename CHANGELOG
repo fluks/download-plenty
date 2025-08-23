@@ -1,3 +1,9 @@
+v1.0.0 chromium Sat, 23 Aug 2025 15:47:19 +0300
+
+  * First Chromium version.
+  * Use Manifest version 3.
+  * Make HEAD requests in service worker.
+
 v0.11.0 Wed, 26 Apr 2023 14:20:55 +0300
 
   * Make popup's columns resizable.
