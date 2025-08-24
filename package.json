@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "dompurify": "^2.1.1"
+    "dompurify": "latest"
   },
   "devDependencies": {
     "web-ext": "latest",
