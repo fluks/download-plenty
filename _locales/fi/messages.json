@@ -1,5 +1,5 @@
 {
     "extensionDescription": {
-        "message": "Vielä uusi latauslisäosa.\n\nKÄYTTÖ\n\nTiedostoja ladataan valitsemalla ne yksittäin, käyttäen säännöllisiä lausekkeita, joita verrataan URL:n tai painaen MIME-tyyppiä, joka valitsee kaikki samantyyppiset tiedostot (tai poistaa valinnat). Lataus aloitetaan painamalla latausnappia.\n\nTiedostot voidaan järjestää painamalla sarakkeiden otsikoita.\n\nValittujen tiedostojen URL:t voidaan tallettaa tiedostoon tai kopioida leikepöydälle.\n\nAsetuksista voidaan rajoittaa ladattavia tiedostoja niiden MIME-tyypin perusteella."
+        "message": "Vielä uusi latauslisäosa. Lataa tiedostoja sivulta rinnakkaisesti."
     }
 }

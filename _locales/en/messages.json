@@ -1,5 +1,5 @@
 {
     "extensionDescription": {
-        "message": "Yet another download addon.\n\n USAGE\n\nFiles are downloaded by selecting them on an individual basis, using a regular expression to match the URLs or by pressing the MIME type, which selects (or deselects) all the files having the same MIME type. And then pressing the download button.\n\nYou can sort the files by clicking on the column headers.\n\nThe URLs of the selected files can be saved into a file or to the clipboard.\n\nYou can limit the files shown by selecting MIME types in the options page."
+        "message": "Yet another download addon. Download files parallelly from a page."
     }
 }
