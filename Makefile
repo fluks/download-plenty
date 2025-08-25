@@ -19,14 +19,11 @@ common_files := \
 	CHANGELOG
 firefox_files := \
 	$(common_files)
-chromium_files := \
-	$(common_files)
 
-firefox-bin := ~/Downloads/firefox_dev/firefox
+firefox-bin := ~/programs/firefox_dev/firefox
 ff-profile := dev-edition-default
 
-.PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint \
-	doc min_version compare_install_and_source
+.PHONY: run package lint doc min_version compare_install_and_source
 
 run:
 	web-ext \
@@ -42,17 +39,8 @@ run:
 
 version = $(shell sed -n 's/ *"version": "\(.*\)",/\1/ p' manifest.json)
 
-firefox: change_to_firefox
+package:
 	zip -r downloadplenty_$(version).xpi $(firefox_files)
-
-chromium: change_to_chromium
-	zip downloadplenty_$(version).zip $(chromium_files)
-
-change_to_firefox:
-	cp firefox/manifest.json .
-
-change_to_chromium:
-	cp chromium/manifest.json .
 
 lint:
 	# Check JSON syntax.
@@ -62,9 +50,6 @@ lint:
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
-
-clean:
-	rm manifest.json
 
 # Set VERBOSITY and BROWSER environment variables, e.g. make min_version
 # VERBOSITY=-vv.
