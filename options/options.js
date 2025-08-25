@@ -1,12 +1,11 @@
 'use strict';
 
-const mimeFilters = document.querySelectorAll('#mime-types > option');
+const g_mimeFilters = document.querySelectorAll('#mime-types > option');
 
 /**
- * Load settings.
- * @param e {EventTarget}
+ * @async
  */
-const loadSettings = async (e) => {
+const loadSettings = async () => {
     // Need to be called first.
     await Common.getLocalOptions();
 
@@ -14,20 +13,20 @@ const loadSettings = async (e) => {
     if (!options)
         return;
 
-    mimeFilters.forEach(option => {
-        option.selected = options.mimeFilters[option.value];
+    g_mimeFilters.forEach(o => {
+        o.selected = options.mimeFilters[o.value];
     });
 };
 
 /**
  */
 const saveSettings = () => {
-    const options = { mimeFilters: {} };
-    mimeFilters.forEach(option => {
-        options.mimeFilters[option.value] = option.selected;
+    const mimeFilters = {};
+    g_mimeFilters.forEach(o => {
+        mimeFilters[o.value] = o.selected;
     });
 
-    chrome.storage[Common.localOpts.storageArea].set(options);
+    browser.storage[Common.localOpts.storageArea].set({ mimeFilters: mimeFilters, });
 };
 
 /**
