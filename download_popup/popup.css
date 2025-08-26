@@ -145,3 +145,27 @@ iframe {
 .pause {
   background-image: url('pause.svg');
 }
+
+#download-col {
+  width: auto;
+}
+
+#mime-col {
+  width: auto;
+}
+
+#url-col {
+  width: 50%;
+}
+
+#bytes-col {
+  width: 10%;
+}
+
+#time-left-col {
+  width: 10%;
+}
+
+#controls-col {
+  width: 10%;
+}
