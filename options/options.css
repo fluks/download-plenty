@@ -3,5 +3,11 @@ body {
 }
 
 div {
-  margin-bottom: 15px;
+  display: grid;
+  grid: repeat(2, max-content) / repeat(2, min-content);
+  grid-gap: 10px;
+}
+
+label, button {
+  width: max-content;
 }
