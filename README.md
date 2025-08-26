@@ -1,6 +1,6 @@
 # Description
 
-Download manager addon for Firefox.
+Download manager addon for Firefox and Chrome.
 
 # Usage
 
@@ -26,6 +26,7 @@ The addon doesn't work if fetch is not allowed in NoScript.
 # Install
 
 [Download Plenty in AMO](https://addons.mozilla.org/addon/download-plenty/)
+[Download Plenty in Chrome Web Store](https://chromewebstore.google.com/detail/download-plenty/ioliclooohbljgnblhlfbfahijakonpb)
 
 # Licenses
 
