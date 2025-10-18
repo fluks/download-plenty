@@ -64,7 +64,8 @@ iframe {
   grid-template-columns: max-content 1fr max-content;
   grid-template-areas: "a . a"
                        "b b ."
-                       "c c .";
+                       "c c ."
+                       "d . .";
   position: fixed;
   top: 0;
   z-index: 1;
@@ -144,4 +145,18 @@ iframe {
 
 .pause {
   background-image: url('pause.svg');
+}
+
+#download-directory-button {
+  display: none;
+}
+
+#download-directory-label {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #E9E9ED;
+  color: black;
+  border-radius: 5px;
+  border: solid black 1px;
+  cursor: pointer;
 }

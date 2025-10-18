@@ -692,6 +692,58 @@ const setColumnSizes = async () => {
     }
 };
 
+const getFirefoxPreferencesDownloadDirectory = async () => {
+    try {
+        const res = await browser.downloads.download({
+            url: browser.runtime.getURL('download_popup/download-plenty-dummy.txt'),
+            saveAs: false,
+        });
+        const query = await browser.downloads.search({ id: res.id, });
+        if (!query || query.length === 0) {
+            throw "No array or it's empty.";
+        }
+        let dir = query[0].filename.split('/');
+        dir.pop();
+
+        return dir.join('/');
+    }
+    catch (e) {
+        throw `Couldn't get download directory, reason: ${e}`;
+    }
+};
+
+const getUserAddonDownloadDirectory = async () => {
+    await Common.getLocalOptions();
+    const options = await browser.storage[Common.localOpts.storageArea].get('downloadDirectory');
+
+    return 'downloadDirectory' in options ? options.downloadDirectory : false;
+};
+
+const isValidDownloadDirectory = (dir, prefDir) => {
+};
+
+const showDownloadDirectory = async () => {
+    const directoryInPreferences = await getFirefoxPreferencesDownloadDirectory();
+    const directoryInOptions = await getUserAddonDownloadDirectory();
+    let directory;
+    if (!directoryInOptions) {
+        directory = directoryInPreferences;
+    }
+    else if (!isValidDownloadDirectory(directoryInOptions, directoryInPreferences)) {
+        directory = `User selected directory, ${directoryInOptions} isn't valid. ${directoryInPreferences} is used`;
+    }
+    else {
+        directory = directoryInOptions;
+    }
+    
+    /*document.querySelector('#download-directory-button'). = directory;*/
+};
+
+const changeDownloadDirectory = (e) => {
+    const files = e.target.files;
+    console.log(files, document.querySelector('#download-directory-button').value);
+};
+
 document.addEventListener('DOMContentLoaded', getDownloads);
 document.addEventListener('DOMContentLoaded', positionTable);
 document.addEventListener('localized', Common.setLangAndDir);
@@ -706,5 +758,8 @@ document.querySelector('#clipboard-button')
     .addEventListener('click', saveSelectedURLsToClipboard);
 document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
+document.querySelector('#download-directory-button')
+    .addEventListener('change', changeDownloadDirectory);
 document.addEventListener('DOMContentLoaded', resizeColumns);
 document.addEventListener('DOMContentLoaded', setColumnSizes);
+document.addEventListener('DOMContentLoaded', showDownloadDirectory);
