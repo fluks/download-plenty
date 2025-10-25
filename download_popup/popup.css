@@ -147,16 +147,20 @@ iframe {
   background-image: url('pause.svg');
 }
 
-#download-directory-button {
+#download-directory-help {
+  height: 16px;
+  cursor: pointer;
+}
+
+.hidden {
   display: none;
 }
 
-#download-directory-label {
-  display: inline-block;
-  padding: 5px 10px;
-  background-color: #E9E9ED;
-  color: black;
-  border-radius: 5px;
-  border: solid black 1px;
-  cursor: pointer;
+#help-popup {
+  position: fixed;
+  width: 300px;
+  z-index: 2;
+  background-color: white;
+  padding: 10px;
+  border: solid 1px black;
 }

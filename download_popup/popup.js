@@ -680,7 +680,7 @@ const resizeColumns = () => {
     });
 };
 
-/**
+/** @async
  */
 const setColumnSizes = async () => {
     await Common.getLocalOptions();
@@ -692,56 +692,112 @@ const setColumnSizes = async () => {
     }
 };
 
-const getFirefoxPreferencesDownloadDirectory = async () => {
-    try {
-        const res = await browser.downloads.download({
-            url: browser.runtime.getURL('download_popup/download-plenty-dummy.txt'),
-            saveAs: false,
-        });
-        const query = await browser.downloads.search({ id: res.id, });
-        if (!query || query.length === 0) {
-            throw "No array or it's empty.";
-        }
-        let dir = query[0].filename.split('/');
-        dir.pop();
-
-        return dir.join('/');
-    }
-    catch (e) {
-        throw `Couldn't get download directory, reason: ${e}`;
-    }
-};
-
-const getUserAddonDownloadDirectory = async () => {
+/** @async
+ * @return {String} Download directory if set or empty string.
+ */
+const getDownloadDirectoryInOptions = async () => {
     await Common.getLocalOptions();
     const options = await browser.storage[Common.localOpts.storageArea].get('downloadDirectory');
 
-    return 'downloadDirectory' in options ? options.downloadDirectory : false;
+    return options?.downloadDirectory || '';
 };
 
+/** @return {Boolean} Whether dir is under prefDir.
+ */
 const isValidDownloadDirectory = (dir, prefDir) => {
+    return dir.startsWith(prefDir);
 };
 
-const showDownloadDirectory = async () => {
-    const directoryInPreferences = await getFirefoxPreferencesDownloadDirectory();
-    const directoryInOptions = await getUserAddonDownloadDirectory();
-    let directory;
-    if (!directoryInOptions) {
-        directory = directoryInPreferences;
+/** Get user selected download directory or default directory.
+ * @async
+ * @param msg {Object} Object with 'directory' or 'default_directory' key.
+ * @return {Promise[String]} Download directory.
+ * @throw {String}
+ */
+const getDownloadDirectory = async (msg) => {
+    const res = await browser.runtime.sendMessage(msg);
+    if ('result' in res) {
+        return res.result;
     }
-    else if (!isValidDownloadDirectory(directoryInOptions, directoryInPreferences)) {
-        directory = `User selected directory, ${directoryInOptions} isn't valid. ${directoryInPreferences} is used`;
+    else if ('error' in res) {
+        throw res.error;
+    }
+};
+
+/** Change download directory by showing the user a file chooser to save a dummy file
+ * temporarily.
+ * @async
+ */
+const changeDownloadDirectory = async () => {
+    let dir;
+    try {
+        const directoryInPreferences = await getDownloadDirectory({ default_directory: true, });
+        const directory = await getDownloadDirectory({ directory: true, });
+        if (directory === directoryInPreferences) {
+            await Common.getLocalOptions();
+            browser.storage[Common.localOpts.storageArea].remove('downloadDirectory');
+            dir = directoryInPreferences;
+        }
+        else if (isValidDownloadDirectory(directory, directoryInPreferences)) {
+            const relativeDir = (new String(directory)).replace(`${directoryInPreferences}/`, '') + '/';
+            await Common.getLocalOptions();
+            browser.storage[Common.localOpts.storageArea].set({
+                downloadDirectory: {
+                    relative: relativeDir,
+                    absolute: directory,
+                }
+            });
+            dir = directory;
+        }
+        else {
+            dir = browser.i18n.getMessage('popup_js_incorrectOptionsDirectory',
+                directory, directoryInPreferences);
+        }
+    }
+    catch (e) {
+        dir = e + browser.i18n.getMessage('popup_js_oldDirectoryUsed');
+    }
+    document.querySelector('#download-directory').textContent = dir;
+};
+
+/** Show download directory on load.
+ * @async
+ */
+const showDownloadDirectory = async () => {
+    const directoryInOptions = await getDownloadDirectoryInOptions();
+    let directory;
+    try {
+        const directoryInPreferences = await getDownloadDirectory({ default_directory: true, });
+        if (!directoryInOptions) {
+            directory = directoryInPreferences;
+        }
+        else if (!isValidDownloadDirectory(directoryInOptions.absolute, directoryInPreferences)) {
+            directory = browser.i18n.getMessage('popup_js_incorrectOptionsDirectory',
+                directoryInOptions.absolute, directoryInPreferences);
+        }
+        else {
+            directory = directoryInOptions.absolute;
+        }
+    }
+    catch (e) {
+        directory = e + browser.i18n.getMessage('popup_js_showDownloadDirectoryError');
+    }
+    document.querySelector('#download-directory').textContent = directory;
+};
+
+/** @param e {ClickEvent}
+ */
+const showDirectoryHelp = (e) => {
+    const helpPopup = document.querySelector('#help-popup');
+    if (helpPopup.classList.contains('hidden')) {
+        helpPopup.classList.remove('hidden');
+        const rect = e.target.getBoundingClientRect();
+        helpPopup.style.top = rect.top + 'px';
+        helpPopup.style.left = (rect.right + 10) + 'px';
     }
     else {
-        directory = directoryInOptions;
+        helpPopup.classList.add('hidden');
     }
-    
-    /*document.querySelector('#download-directory-button'). = directory;*/
-};
-
-const changeDownloadDirectory = (e) => {
-    const files = e.target.files;
-    console.log(files, document.querySelector('#download-directory-button').value);
 };
 
 document.addEventListener('DOMContentLoaded', getDownloads);
@@ -759,7 +815,9 @@ document.querySelector('#clipboard-button')
 document.querySelector('#file-button')
     .addEventListener('click', saveSelectedURLsToFile);
 document.querySelector('#download-directory-button')
-    .addEventListener('change', changeDownloadDirectory);
+    .addEventListener('click', changeDownloadDirectory);
 document.addEventListener('DOMContentLoaded', resizeColumns);
 document.addEventListener('DOMContentLoaded', setColumnSizes);
 document.addEventListener('DOMContentLoaded', showDownloadDirectory);
+document.querySelector('#download-directory-help')
+    .addEventListener('click', showDirectoryHelp);

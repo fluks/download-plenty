@@ -1,5 +1,28 @@
 {
     "extensionDescription": {
         "message": "Yet another download addon.\n\n USAGE\n\nFiles are downloaded by selecting them on an individual basis, using a regular expression to match the URLs or by pressing the MIME type, which selects (or deselects) all the files having the same MIME type. And then pressing the download button.\n\nYou can sort the files by clicking on the column headers.\n\nThe URLs of the selected files can be saved into a file or to the clipboard.\n\nYou can limit the files shown by selecting MIME types in the options page."
+    },
+    "background_js_searchDownloadError": {
+        "message": "No array or it's empty."
+    },
+    "background_js_getDirectoryError": {
+        "message": "Couldn't get download directory, reason: "
+    },
+    "popup_js_showDownloadDirectoryError": {
+        "message": ". Default directory is used."
+    },
+    "popup_js_incorrectOptionsDirectory": {
+        "message": "$ABSOLUTE_DIRECTORY_IN_OPTIONS$ isn't valid. $DIRECTORY_IN_PREFERENCES$ is used",
+        "placeholders": {
+            "absolute_directory_in_options":  {
+                "content": "$1"
+            },
+            "directory_in_preferences":  {
+                "content": "$2"
+            }
+        }
+    },
+    "popup_js_oldDirectoryUsed": {
+        "message": " Old directory is used."
     }
 }
