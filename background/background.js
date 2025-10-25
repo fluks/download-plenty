@@ -128,20 +128,9 @@ const waitForDownloadsToStart = async (ids) => {
 const getFilenameFromURL = (url) => {
     url = new URL(url);
     const paths = url.pathname.split('/');
+    const URLName = url.toString().replaceAll(/\/|:/gi, '_');
 
-    return paths.pop() || 'download';
-};
-
-/**
- * Add a counter to the filename before the suffix if the file has one.
- * The counter is added because, if files have the same file name, downloads
- * will fail.
- * @param filename {String} The name of the file to be downloaded.
- * @param i {Int} Counter to add to the filename.
- * @return {String} Filename and the counter concatenated.
- */
-const addCounter = (filename, i) => {
-    return filename.replace(/(\.[^.]*)?$/, `_${i}$1`);
+    return paths.pop() || URLName;
 };
 
 /**
@@ -163,18 +152,17 @@ const download = async (port) => {
 
             const ids = [];
             const files = {};
+            await Common.getLocalOptions();
+            const options = await browser.storage[Common.localOpts.storageArea].get('downloadDirectory');
+            const directory = options?.downloadDirectory?.relative || '';
             msg.urls.forEach((url, i) => {
                 try {
-                    const downloadOptions = { url: url, allowHttpErrors: true, };
-
-                    let file = getFilenameFromURL(url);
-                    if (files.hasOwnProperty(file)) {
-                        file = addCounter(file, files[file]++);
-                        downloadOptions.filename = file;
-                    }
-                    else
-                        files[file] = 1
-
+                    const downloadOptions = {
+                        url: url,
+                        allowHttpErrors: true,
+                        filename: directory + getFilenameFromURL(url),
+                        conflictAction: "uniquify",
+                    };
                     const id = browser.downloads.download(downloadOptions);
                     ids.push(id);
                 } catch (err) {
@@ -233,7 +221,48 @@ const openDownloadsTab = async (tab) => {
     }
 };
 
+/** Get default download directory or ask a user to choose a directory.
+ * @param sendResponse {Function}
+ * @param saveAs {Boolean} Show file chooser or no.
+ */
+const getDirectory = async (sendResponse, saveAs) => {
+    try {
+        const id = await browser.downloads.download({
+            url: browser.runtime.getURL('download_popup/download-plenty-dummy.txt'),
+            saveAs: saveAs,
+        });
+        const query = await browser.downloads.search({ id: id, });
+        if (!query || query.length === 0) {
+            throw browser.i18n.getMessage('background_js_searchDownloadError');
+        }
+        let dir = query[0].filename.split('/');
+        dir.pop();
+
+        browser.downloads.cancel(id).
+            catch(() => {
+                browser.downloads.removoFile(id).
+                    catch(() => browser.downloads.erase({ id: id, })).
+                    then(() => browser.downloads.erase({ id: id, }));
+            });
+
+        sendResponse({ result: dir.join('/'), });
+    }
+    catch (e) {
+        sendResponse({ error: browser.i18n.getMessage('background_js_getDirectoryError') + e, });
+    }
+};
+
 getPlatform();
 chrome.runtime.onInstalled.addListener(setOptions);
 chrome.runtime.onConnect.addListener(download);
 browser.browserAction.onClicked.addListener(openDownloadsTab);
+browser.runtime.onMessage.addListener((req, _, sendResponse) => {
+    if ('directory' in req) {
+        getDirectory(sendResponse, true);
+    }
+    else if ('default_directory' in req) {
+        getDirectory(sendResponse, false);
+    }
+
+    return true;
+});

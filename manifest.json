@@ -20,7 +20,10 @@
     },
 
     "background": {
-        "scripts": [ "background/background.js" ]
+        "scripts": [
+            "common/common.js",
+            "background/background.js"
+        ]
     },
 
     "browser_action": {

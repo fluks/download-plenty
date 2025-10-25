@@ -1,5 +1,28 @@
 {
     "extensionDescription": {
         "message": "Vielä uusi latauslisäosa.\n\nKÄYTTÖ\n\nTiedostoja ladataan valitsemalla ne yksittäin, käyttäen säännöllisiä lausekkeita, joita verrataan URL:n tai painaen MIME-tyyppiä, joka valitsee kaikki samantyyppiset tiedostot (tai poistaa valinnat). Lataus aloitetaan painamalla latausnappia.\n\nTiedostot voidaan järjestää painamalla sarakkeiden otsikoita.\n\nValittujen tiedostojen URL:t voidaan tallettaa tiedostoon tai kopioida leikepöydälle.\n\nAsetuksista voidaan rajoittaa ladattavia tiedostoja niiden MIME-tyypin perusteella."
+    },
+    "background_js_searchDownloadError": {
+        "message": "Ei taulukkoa tai se on tyhjä."
+    },
+    "background_js_getDirectoryError": {
+        "message": "Ei saatu latauskansiota, syy: "
+    },
+    "popup_js_showDownloadDirectoryError": {
+        "message": ". Käytetään oletuskansiota."
+    },
+    "popup_js_incorrectOptionsDirectory": {
+        "message": "$ABSOLUTE_DIRECTORY_IN_OPTIONS$ ei ole validi. $DIRECTORY_IN_PREFERENCES$ on käytössä",
+        "placeholders": {
+            "absolute_directory_in_options":  {
+                "content": "$1"
+            },
+            "directory_in_preferences":  {
+                "content": "$2"
+            }
+        }
+    },
+    "popup_js_oldDirectoryUsed": {
+        "message": " Käytetään vanhaa kansiota."
     }
 }
