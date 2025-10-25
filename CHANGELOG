@@ -1,3 +1,7 @@
+v0.13 Sat, 25 Oct 2025 19:14:42 +0300
+
+  * Add download directory feature.
+
 v0.12.1 Fri, 29 Aug 2025 15:30:12 +0300
 
   * Fix not resizable columns.
