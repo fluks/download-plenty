@@ -731,16 +731,15 @@ const getDownloadDirectory = async (msg) => {
 const changeDownloadDirectory = async () => {
     let dir;
     try {
+        await Common.getLocalOptions();
         const directoryInPreferences = await getDownloadDirectory({ default_directory: true, });
         const directory = await getDownloadDirectory({ directory: true, });
         if (directory === directoryInPreferences) {
-            await Common.getLocalOptions();
             browser.storage[Common.localOpts.storageArea].remove('downloadDirectory');
             dir = directoryInPreferences;
         }
         else if (isValidDownloadDirectory(directory, directoryInPreferences)) {
             const relativeDir = (new String(directory)).replace(`${directoryInPreferences}/`, '') + '/';
-            await Common.getLocalOptions();
             browser.storage[Common.localOpts.storageArea].set({
                 downloadDirectory: {
                     relative: relativeDir,
@@ -750,8 +749,9 @@ const changeDownloadDirectory = async () => {
             dir = directory;
         }
         else {
+            const directoryInUse = (await getDownloadDirectoryInOptions())?.absolute || directoryInPreferences;
             dir = browser.i18n.getMessage('popup_js_incorrectOptionsDirectory',
-                [ directory, directoryInPreferences, ]);
+                [ directory, directoryInUse, ]);
         }
     }
     catch (e) {
