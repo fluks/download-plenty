@@ -1,3 +1,7 @@
+v0.13.1 Sun, 26 Oct 2025 10:06:24 +0200
+
+  * Fix i18n.getMessage calls bug.
+
 v0.13 Sat, 25 Oct 2025 19:14:42 +0300
 
   * Add download directory feature.
