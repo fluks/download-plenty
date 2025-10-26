@@ -1,3 +1,7 @@
+v0.13.2 Sun, 26 Oct 2025 10:52:17 +0200
+
+  * Fix wrong directory in error message.
+
 v0.13.1 Sun, 26 Oct 2025 10:06:24 +0200
 
   * Fix i18n.getMessage calls bug.
