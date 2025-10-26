@@ -751,7 +751,7 @@ const changeDownloadDirectory = async () => {
         }
         else {
             dir = browser.i18n.getMessage('popup_js_incorrectOptionsDirectory',
-                directory, directoryInPreferences);
+                [ directory, directoryInPreferences, ]);
         }
     }
     catch (e) {
@@ -773,7 +773,7 @@ const showDownloadDirectory = async () => {
         }
         else if (!isValidDownloadDirectory(directoryInOptions.absolute, directoryInPreferences)) {
             directory = browser.i18n.getMessage('popup_js_incorrectOptionsDirectory',
-                directoryInOptions.absolute, directoryInPreferences);
+                [ directoryInOptions.absolute, directoryInPreferences, ]);
         }
         else {
             directory = directoryInOptions.absolute;
