@@ -294,7 +294,7 @@ const getDirectory = async (sendResponse, saveAs) => {
 
         browser.downloads.cancel(id).
             catch(() => {
-                browser.downloads.removoFile(id).
+                browser.downloads.removeFile(id).
                     catch(() => browser.downloads.erase({ id: id, })).
                     then(() => browser.downloads.erase({ id: id, }));
             });
