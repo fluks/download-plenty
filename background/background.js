@@ -157,7 +157,6 @@ const download = async (port) => {
                 try {
                     const downloadOptions = {
                         url: url,
-                        allowHttpErrors: true,
                         filename: directory + getFilenameFromURL(url),
                         conflictAction: "uniquify",
                     };
@@ -281,22 +280,45 @@ const getHeaders = (port) => {
  */
 const getDirectory = async (sendResponse, saveAs) => {
     try {
+        const dummyDataUrl = 'data:text/plain;charset=utf-8,dummy';
         const id = await browser.downloads.download({
-            url: browser.runtime.getURL('download_popup/download-plenty-dummy.txt'),
+            url: dummyDataUrl,
+            filename: 'download-plenty-dummy.txt',
             saveAs: saveAs,
         });
-        const query = await browser.downloads.search({ id: id, });
-        if (!query || query.length === 0) {
-            throw browser.i18n.getMessage('background_js_searchDownloadError');
-        }
-        let dir = query[0].filename.split('/');
+        const filename = await new Promise((resolve, reject) => {
+            function listener(delta) {
+                if (delta.id !== id) {
+                     return;
+                }
+
+                if (delta.filename && delta.filename.current) {
+                    browser.downloads.onChanged.removeListener(listener);
+                    resolve(delta.filename.current);
+                }
+
+                if (delta.state && delta.state.current === 'interrupted') {
+                    browser.downloads.onChanged.removeListener(listener);
+                    reject(new Error(browser.i18n.getMessage('background_js_downloadInterrupted')));
+                }
+            }
+            browser.downloads.onChanged.addListener(listener);
+
+            browser.downloads.search({ id }).then(([item]) => {
+                if (item && item.filename) {
+                    browser.downloads.onChanged.removeListener(listener);
+                    resolve(item.filename);
+                }
+            });
+        });
+        let dir = filename.split('/');
         dir.pop();
 
         browser.downloads.cancel(id).
             catch(() => {
-                browser.downloads.removeFile(id).
-                    catch(() => browser.downloads.erase({ id: id, })).
-                    then(() => browser.downloads.erase({ id: id, }));
+                browser.downloads.removeFile(id)
+                    .catch(() => browser.downloads.erase({ id: id, }))
+                    .then(() => browser.downloads.erase({ id: id, }));
             });
 
         sendResponse({ result: dir.join('/'), });

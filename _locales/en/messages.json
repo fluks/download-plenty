@@ -8,6 +8,9 @@
     "background_js_getDirectoryError": {
         "message": "Couldn't get download directory, reason: "
     },
+    "background_js_downloadInterrupted": {
+        "message": "Download was interrupted or cancelled."
+    },
     "popup_js_showDownloadDirectoryError": {
         "message": ". Default directory is used."
     },

@@ -8,6 +8,9 @@
     "background_js_getDirectoryError": {
         "message": "Ei saatu latauskansiota, syy: "
     },
+    "background_js_downloadInterrupted": {
+        "message": "Lataus keskeytyi tai peruutettiin."
+    },
     "popup_js_showDownloadDirectoryError": {
         "message": ". Käytetään oletuskansiota."
     },
