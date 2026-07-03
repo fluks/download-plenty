@@ -1,3 +1,7 @@
+v1.2.1 chromium Fri, 03 Jul 2026 20:31:57 +0300
+
+  * Fix too long description.
+
 v1.2.0 chromium Fri, 03 Jul 2026 20:23:17 +0300
 
   * Add download directory feature.
