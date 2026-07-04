@@ -1,3 +1,7 @@
+v1.3.0 chromium Sat, 04 Jul 2026 14:15:10 +0300
+
+  * Show final size for previously unknown file sizes.
+
 v1.2.1 chromium Fri, 03 Jul 2026 20:31:57 +0300
 
   * Fix too long description.
