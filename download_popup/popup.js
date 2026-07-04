@@ -529,7 +529,7 @@ const updateDownloads = (msg) => {
             data.tr.setAttribute('data-id', dl.id);
         const timeLeftElem = data.tr.querySelector('.time-left-text');
         const bytesElem = data.tr.querySelector('.bytes-text');
-        const bytesUnit = goodUnitForBytes(data.bytes);
+        let bytesUnit = goodUnitForBytes(data.bytes);
         const bytesCol = data.tr.querySelector('.bytes-column');
         const progressRGB = 'rgba(73, 251, 73, ';
 
@@ -545,9 +545,14 @@ const updateDownloads = (msg) => {
             timeLeftElem.textContent = humanTimeDiff(dl.timeLeft);
         }
         else if (dl.state === 'complete') {
+            let bytes = data.bytes;
+            if (bytes === 0) {
+                bytes = dl.bytesReceived;
+                bytesUnit = goodUnitForBytes(bytes);
+            }
             bytesElem.textContent =
-                bytesToHuman(data.bytes, false, bytesUnit) + '/' +
-                bytesToHuman(data.bytes, true, bytesUnit);
+                bytesToHuman(bytes, false, bytesUnit) + '/' +
+                bytesToHuman(bytes, true, bytesUnit);
             bytesCol.style.background =
                 `linear-gradient(to right, ${progressRGB}0.7) 100%, white 100%)`;
 
